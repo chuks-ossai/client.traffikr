@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@traffikr/components/*": ["components/*"],
+      "@traffikr/styles/*": ["styles/*"]
+    }
+  }
+}

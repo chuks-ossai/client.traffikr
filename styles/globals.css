@@ -1,0 +1,70 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+.h-screen {
+  height: 100vh;
+}
+
+.btn-block {
+  width: 100% !important;
+}
+.form-control {
+  border-color: #f1f1f1;
+}
+.form-control:focus {
+  box-shadow: none;
+  border-width: 2px;
+}
+
+.login-bg-img {
+  background-image: url('/assets/login-bg.jpg');
+      background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.register-bg-img {
+  background-image: url('/assets/register-bg.jpg');
+      background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.btn-fb {
+  background-color: #3b579d;
+  color: #fff;
+
+}
+
+.btn-gg {
+  background-color: #dc4a38;
+  color: #fff;
+}
+
+.btn:focus {
+  box-shadow: none;
+}
