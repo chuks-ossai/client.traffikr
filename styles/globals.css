@@ -54,6 +54,20 @@ a {
     background-size: cover;
 }
 
+.forgot-password-bg-img {
+  background-image: url('/assets/forgot-password-bg.jpg');
+      background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.reset-password-bg-img {
+  background-image: url('/assets/reset-password-bg.jpg');
+      background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
 .btn-fb {
   background-color: #3b579d;
   color: #fff;
@@ -66,5 +80,9 @@ a {
 }
 
 .btn:focus {
+  box-shadow: none;
+}
+
+.form-control.is-invalid:focus, .was-validated .form-control:invalid:focus {
   box-shadow: none;
 }
