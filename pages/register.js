@@ -4,8 +4,20 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import axios from "axios";
+import { useState } from "react";
+import Loader from "@traffikr/components/Loader";
+import Toastr from "@traffikr/components/Toastr";
 
 const Register = () => {
+  const [processing, setProcessing] = useState(false);
+  const [toastDetails, setToastDetails] = useState({
+    show: false,
+    title: "",
+    type: "",
+  });
+  const handleCloseToast = () => {
+    setToastDetails(null);
+  };
   const validationSchema = Yup.object().shape({
     fullName: Yup.string().required("Fullname is required"),
     emailAddress: Yup.string()
@@ -29,11 +41,35 @@ const Register = () => {
     resolver: yupResolver(validationSchema),
   });
   const onSubmit = (data) => {
-    console.log("register modal", data);
+    setProcessing(true);
     axios
       .post("http://localhost:8000/api/v1/register", data)
-      .then((res) => console.log(res))
-      .catch((e) => console.error(e));
+      .then((res) => {
+        setProcessing(false);
+        if (res.data.Success) {
+          setToastDetails({
+            show: true,
+            type: "success",
+            message: res.data.Results[0].message,
+          });
+        } else {
+          setToastDetails({
+            show: true,
+            type: "danger",
+            message: res.data.ErrorMessage || "Unable to register user",
+          });
+        }
+        console.log(res);
+      })
+      .catch((e) => {
+        setProcessing(false);
+        setToastDetails({
+          show: true,
+          type: "danger",
+          message: "Something went wrong. Unable to register user",
+        });
+        console.log(e);
+      });
   };
   return (
     <>
@@ -57,6 +93,8 @@ const Register = () => {
           href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"
         />
       </Head>
+      <Toastr onClose={handleCloseToast} details={toastDetails} />
+      {processing && <Loader />}
       <div className="container-fluid">
         <div className="row h-screen">
           <div className="d-none d-md-block col-md-6 bg-secondary register-bg-img"></div>
