@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import axios from "axios";
 
 const Register = () => {
 
@@ -15,7 +16,7 @@ const Register = () => {
       .required('Password is required')
       .min(6, 'Password must be at least 6 characters')
       .max(40, 'Password must not exceed 40 characters'),
-    acceptTerms: Yup.bool().oneOf([true], 'You need to accept terms and condition to proceed')
+    termsAgreed: Yup.bool().oneOf([true], 'You need to accept terms and condition to proceed')
   });
 
     const {
@@ -27,6 +28,7 @@ const Register = () => {
   });
   const onSubmit = (data) => {
     console.log('register modal', data);
+    axios.post('http://localhost:8000/api/v1/register', data).then(res => console.log(res)).catch(e => console.error(e))
   };
     return (
         <>
@@ -74,11 +76,11 @@ const Register = () => {
                             <div className="invalid-feedback">{errors?.password?.message}</div>
                         </div>
                         <div className="mb-3 form-check">
-                            <input className={`form-check-input ${errors.acceptTerms ? 'is-invalid' : ''}`} type="checkbox" value="" id="acceptTerms" name="acceptTerms" {...register("acceptTerms", { required: true })} />
-                            <label className="form-check-label" htmlFor="acceptTerms">
+                            <input className={`form-check-input ${errors.termsAgreed ? 'is-invalid' : ''}`} type="checkbox" value="" id="termsAgreed" name="termsAgreed" {...register("termsAgreed", { required: true })} />
+                            <label className="form-check-label" htmlFor="termsAgreed">
                                 I agree to all terms and condition
                             </label>
-                            <div className="invalid-feedback">{errors?.acceptTerms?.message}</div>
+                            <div className="invalid-feedback">{errors?.termsAgreed?.message}</div>
                         </div>
                         <div className="pt-3">
                             <input type="submit" className="btn btn-primary btn-block btn-lg" value="Register" id="register" />
