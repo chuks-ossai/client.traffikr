@@ -1,13 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
-const Toastr = ({ onClose, details }) => {
+const Toastr = ({ onClose, details, useDefaultDuration }) => {
   useEffect(() => {
-    setTimeout(() => {
-      if (details?.show) {
-        console.log(details);
-        onClose && onClose();
-      }
-    }, 5000);
+    !useDefaultDuration &&
+      details?.duration &&
+      setTimeout(() => {
+        if (details?.show) {
+          onClose && onClose();
+        }
+      }, details.duration);
+    useDefaultDuration &&
+      setTimeout(() => {
+        if (details?.show) {
+          onClose && onClose();
+        }
+      }, 6000);
   }, [details]);
   return (
     <div className="position-fixed top-0 end-0 p-3" style={{ zIndex: 11 }}>
