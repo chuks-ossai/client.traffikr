@@ -21,6 +21,9 @@ const Register = () => {
 
   const validationSchema = Yup.object().shape({
     fullName: Yup.string().required("Fullname is required"),
+    username: Yup.string()
+      .required("Username is required")
+      .max(8, "Username must not exceed 8 characters"),
     emailAddress: Yup.string()
       .required("Email is required")
       .email("Email is invalid"),
@@ -116,6 +119,24 @@ const Register = () => {
                   />
                   <div className="invalid-feedback">
                     {errors?.fullName?.message}
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="username" className="form-label">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    className={`form-control form-control-lg ${
+                      errors.username ? "is-invalid" : ""
+                    }`}
+                    name="username"
+                    id="username"
+                    placeholder="eg. johndoe"
+                    {...register("username", { required: true })}
+                  />
+                  <div className="invalid-feedback">
+                    {errors?.username?.message}
                   </div>
                 </div>
                 <div className="mb-3">
