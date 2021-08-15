@@ -3,13 +3,16 @@ import Loader from "@traffikr/components/Loader";
 import Toastr from "@traffikr/components/Toastr";
 import { baseURL } from "app-config";
 import axios from "axios";
+import { authenticate } from "helpers/auth";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
 const Login = () => {
+  const router = useRouter();
   const [processing, setProcessing] = useState(false);
   const [toastDetails, setToastDetails] = useState({
     show: false,
@@ -50,6 +53,9 @@ const Login = () => {
           message: response.data.Results[0].message,
         });
         reset();
+        authenticate(response.data.Results[0], () => {
+          router.push("/");
+        });
       } else {
         setToastDetails({
           show: true,
