@@ -26,7 +26,7 @@ const Activate = () => {
 
   const handleActivate = async (token, data) => {
     console.log("state", state);
-    const res = await axios.post(`${baseURL}/activate-account`, { token });
+    const res = await axios.post(`${baseURL}/account/activate`, { token });
 
     try {
       setLoading(false);

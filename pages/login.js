@@ -3,11 +3,11 @@ import Loader from "@traffikr/components/Loader";
 import Toastr from "@traffikr/components/Toastr";
 import { baseURL } from "app-config";
 import axios from "axios";
-import { authenticate } from "helpers/auth";
+import { authenticate, isAuth } from "helpers/auth";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
@@ -37,13 +37,19 @@ const Login = () => {
     resolver: yupResolver(validationSchema),
   });
 
+  useEffect(() => {
+    if (isAuth()) {
+      isAuth().role === "admin" ? router.push("/admin") : router.push("/user");
+    }
+  }, []);
+
   const handleCloseToast = () => {
     setToastDetails(null);
   };
 
   const onSubmit = async (data) => {
     setProcessing(true);
-    const response = await axios.post(`${baseURL}/login`, data);
+    const response = await axios.post(`${baseURL}/account/login`, data);
     try {
       setProcessing(false);
       if (response.data.Success) {
@@ -54,7 +60,9 @@ const Login = () => {
         });
         reset();
         authenticate(response.data.Results[0], () => {
-          router.push("/");
+          isAuth() && isAuth().role === "admin"
+            ? router.push("/admin")
+            : router.push("/user");
         });
       } else {
         setToastDetails({

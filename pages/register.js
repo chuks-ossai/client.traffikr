@@ -1,14 +1,17 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loader from "@traffikr/components/Loader";
 import Toastr from "@traffikr/components/Toastr";
 import { baseURL } from "app-config";
+import { isAuth } from "helpers/auth";
 
 const Register = () => {
+  const router = useRouter();
   const [processing, setProcessing] = useState(false);
   const [toastDetails, setToastDetails] = useState({
     show: false,
@@ -45,10 +48,15 @@ const Register = () => {
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
+
+  useEffect(() => {
+    isAuth() && router.push("/");
+  }, []);
+
   const onSubmit = (data) => {
     setProcessing(true);
     axios
-      .post(`${baseURL}/register`, data)
+      .post(`${baseURL}/account/register`, data)
       .then((res) => {
         setProcessing(false);
         if (res.data.Success) {
