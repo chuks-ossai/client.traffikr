@@ -1,10 +1,21 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import Loader from "@traffikr/components/Loader";
+import Toastr from "@traffikr/components/Toastr";
+import { baseURL } from "app-config";
+import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
 const Login = () => {
+  const [processing, setProcessing] = useState(false);
+  const [toastDetails, setToastDetails] = useState({
+    show: false,
+    title: "",
+    type: "",
+  });
   const validationSchema = Yup.object().shape({
     emailAddress: Yup.string()
       .required("Email is required")
@@ -18,15 +29,52 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
-  const onSubmit = (data) => {
-    console.log("login model", data);
+
+  const handleCloseToast = () => {
+    setToastDetails(null);
+  };
+
+  const onSubmit = async (data) => {
+    setProcessing(true);
+    const response = await axios.post(`${baseURL}/login`, data);
+    try {
+      setProcessing(false);
+      if (response.data.Success) {
+        setToastDetails({
+          show: true,
+          type: "success",
+          message: response.data.Results[0].message,
+        });
+        reset();
+      } else {
+        setToastDetails({
+          show: true,
+          type: "danger",
+          message: response.data.ErrorMessage || "Unable to login user",
+        });
+      }
+    } catch (err) {
+      setProcessing(false);
+      setToastDetails({
+        show: true,
+        type: "danger",
+        message: "Something went wrong. Unable to register user",
+      });
+    }
   };
 
   return (
     <>
+      <Toastr
+        onClose={handleCloseToast}
+        details={toastDetails}
+        useDefaultDuration
+      />
+      {processing && <Loader />}
       <div className="container-fluid">
         <div className="row h-screen">
           <div className="d-none d-md-block col-md-6 bg-secondary login-bg-img">
@@ -111,7 +159,7 @@ const Login = () => {
                   <input
                     type="submit"
                     className="btn btn-primary btn-block btn-lg"
-                    value="Login"
+                    value={processing ? "Loging in..." : "Login"}
                     id="Login"
                   />
                 </div>
