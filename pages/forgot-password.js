@@ -1,10 +1,20 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import Head from "next/head";
+import Loader from "@traffikr/components/Loader";
+import Toastr from "@traffikr/components/Toastr";
+import { baseURL } from "app-config";
+import axios from "axios";
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
-const Login = () => {
+const ForgotPassword = () => {
+  const [processing, setProcessing] = useState(false);
+  const [toastDetails, setToastDetails] = useState({
+    show: false,
+    title: "",
+    type: "",
+  });
   const validationSchema = Yup.object().shape({
     emailAddress: Yup.string()
       .required("Email is required")
@@ -14,14 +24,49 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
-  const onSubmit = (data) => {
-    console.log("forgot password model", data);
+  const onSubmit = async (data) => {
+    try {
+      setProcessing(true);
+      const response = await axios.post(
+        `${baseURL}/account/forgot-password`,
+        data
+      );
+      setProcessing(false);
+      if (response.data.Success) {
+        setToastDetails({
+          show: true,
+          type: "success",
+          message: response.data.Results[0].message,
+        });
+        reset();
+      } else {
+        setToastDetails({
+          show: true,
+          type: "danger",
+          message: response.data.ErrorMessage || "Unable to reset password",
+        });
+      }
+    } catch (err) {
+      setProcessing(false);
+      setToastDetails({
+        show: true,
+        type: "danger",
+        message: "Something went wrong. Unable to reset password",
+      });
+    }
   };
+  const handleCloseToast = () => {
+    setToastDetails(null);
+  };
+
   return (
     <>
+      <Toastr onClose={handleCloseToast} details={toastDetails} />
+      {processing && <Loader />}
       <div className="container-fluid">
         <div className="row h-screen">
           <div className="d-none d-md-block col-md-6 bg-secondary forgot-password-bg-img">
@@ -66,8 +111,10 @@ const Login = () => {
                   <input
                     type="submit"
                     className="btn btn-primary btn-block btn-lg"
-                    value="Login"
-                    id="Login"
+                    value={
+                      processing ? "Getting Reset Link..." : "Get Reset Link"
+                    }
+                    id="get-reset-link"
                   />
                 </div>
               </form>
@@ -88,4 +135,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;

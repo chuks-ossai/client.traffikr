@@ -23,7 +23,6 @@ const withUser = (Page) => {
           user = null;
         }
       } catch (err) {
-        console.log(err);
         if (err.response.status === 401) {
           user = null;
         }
