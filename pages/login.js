@@ -49,8 +49,8 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     setProcessing(true);
-    const response = await axios.post(`${baseURL}/account/login`, data);
     try {
+      const response = await axios.post(`${baseURL}/account/login`, data);
       setProcessing(false);
       if (response.data.Success) {
         setToastDetails({

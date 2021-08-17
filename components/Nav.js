@@ -1,6 +1,14 @@
 import { isAuth, logout } from "helpers/auth";
 import Link from "next/link";
+import { useRouter } from "next/router";
 const Nav = () => {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout(() => {
+      router.push("/login");
+    });
+  };
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light position-sticky">
       <div className="container-fluid">
@@ -40,7 +48,10 @@ const Nav = () => {
                     </Link>
                   </li>
                   <li className="nav-item d-flex align-items-center">
-                    <a onClick={logout} className="btn btn-primary btn-sm">
+                    <a
+                      onClick={handleLogout}
+                      className="btn btn-primary btn-sm"
+                    >
                       Logout
                     </a>
                   </li>

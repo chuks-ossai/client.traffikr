@@ -25,7 +25,6 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     const handleRouteChange = () => {
-      console.log("rout chenage");
       nProgress.start();
     };
     router.events.on("routeChangeStart", (url) => nProgress.start());
