@@ -17,13 +17,13 @@ const withUser = (Page) => {
             ContentType: "application/json",
           },
         });
-        if (res.data.Success && res.data.Results) {
+        if (res?.data?.Success && res?.data?.Results) {
           user = res.data.Results;
         } else {
           user = null;
         }
       } catch (err) {
-        if (err.response.status === 401) {
+        if (err?.response?.status === 401) {
           user = null;
         }
       }
