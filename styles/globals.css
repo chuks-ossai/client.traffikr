@@ -2,8 +2,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 a {
@@ -41,37 +40,36 @@ a {
 }
 
 .login-bg-img {
-  background-image: url('/assets/login-bg.jpg');
-      background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+  background-image: url("/assets/login-bg.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 .register-bg-img {
-  background-image: url('/assets/register-bg.jpg');
-      background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+  background-image: url("/assets/register-bg.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 .forgot-password-bg-img {
-  background-image: url('/assets/forgot-password-bg.jpg');
-      background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+  background-image: url("/assets/forgot-password-bg.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 .reset-password-bg-img {
-  background-image: url('/assets/reset-password-bg.jpg');
-      background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+  background-image: url("/assets/reset-password-bg.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 .btn-fb {
   background-color: #3b579d;
   color: #fff;
-
 }
 
 .btn-gg {
@@ -83,6 +81,7 @@ a {
   box-shadow: none;
 }
 
-.form-control.is-invalid:focus, .was-validated .form-control:invalid:focus {
+.form-control.is-invalid:focus,
+.was-validated .form-control:invalid:focus {
   box-shadow: none;
 }

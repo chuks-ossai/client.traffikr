@@ -1,24 +1,40 @@
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import * as jwt from "jsonwebtoken";
 import Loader from "@traffikr/components/Loader";
-import Toastr from "@traffikr/components/Toastr";
-import { baseURL } from "app-config";
 import axios from "axios";
-import Link from "next/link";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
+import { baseURL } from "app-config";
+import Link from "next/link";
+import Toastr from "@traffikr/components/Toastr";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-const ForgotPassword = () => {
+const ResetPassword = () => {
+  const router = useRouter();
+  const [state, setState] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [toastDetails, setToastDetails] = useState({
     show: false,
     title: "",
     type: "",
   });
+
+  useEffect(() => {
+    if (!state && router && router.query && router.query.token) {
+      const { token } = router.query;
+      const { data } = jwt.decode(token);
+      setState({ data, token });
+    }
+
+    return () => {};
+  }, [router]);
+
   const validationSchema = Yup.object().shape({
-    emailAddress: Yup.string()
-      .required("Email is required")
-      .email("Email is invalid"),
+    password: Yup.string()
+      .required("Password is required")
+      .min(6, "Password must be at least 6 characters")
+      .max(40, "Password must not exceed 40 characters"),
   });
   const {
     register,
@@ -28,13 +44,14 @@ const ForgotPassword = () => {
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
+
   const onSubmit = async (data) => {
     try {
       setProcessing(true);
-      const response = await axios.post(
-        `${baseURL}/account/forgot-password`,
-        data
-      );
+      const response = await axios.post(`${baseURL}/account/reset-password`, {
+        ...data,
+        resetPasswordLink: state.token,
+      });
       setProcessing(false);
       if (response.data.Success) {
         setToastDetails({
@@ -59,6 +76,7 @@ const ForgotPassword = () => {
       });
     }
   };
+
   const handleCloseToast = () => {
     setToastDetails(null);
   };
@@ -69,9 +87,7 @@ const ForgotPassword = () => {
       {processing && <Loader />}
       <div className="container-fluid">
         <div className="row h-screen">
-          <div className="d-none d-md-block col-md-6 bg-secondary forgot-password-bg-img">
-            Hello login dark
-          </div>
+          <div className="d-none d-md-block col-md-6 bg-secondary forgot-password-bg-img"></div>
           <div className="col-sm-12 col-md-6 bg-white m-auto px-0 px-lg-5">
             <div className="container px-md-5">
               <div className="brand-logo mb-4 text-primary">
@@ -82,28 +98,28 @@ const ForgotPassword = () => {
                 </h1>
               </div>
               <div className="mb-4">
-                <h3>Forgot Password!</h3>
+                <h3>Welcome back {state?.data?.fullName}!</h3>
                 <small className="text-secondary">
-                  Please enter your email where reset password link will be sent
+                  Please enter your new password below
                 </small>
               </div>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-3">
-                  <label htmlFor="emailAddress" className="form-label">
-                    Email address
+                  <label htmlFor="password" className="form-label">
+                    New password
                   </label>
                   <input
-                    type="email"
+                    type="password"
                     className={`form-control form-control-lg ${
-                      errors.emailAddress ? "is-invalid" : ""
+                      errors.password ? "is-invalid" : ""
                     }`}
-                    id="emailAddress"
-                    name="emailAddress"
-                    placeholder="eg. name@example.com"
-                    {...register("emailAddress", { required: true })}
+                    id="password"
+                    name="password"
+                    placeholder="password"
+                    {...register("password", { required: true })}
                   />
                   <div className="invalid-feedback">
-                    {errors?.emailAddress?.message}
+                    {errors?.password?.message}
                   </div>
                 </div>
 
@@ -112,9 +128,9 @@ const ForgotPassword = () => {
                     type="submit"
                     className="btn btn-primary btn-block btn-lg"
                     value={
-                      processing ? "Getting Reset Link..." : "Get Reset Link"
+                      processing ? "Password Resetting..." : "Reset Password"
                     }
-                    id="get-reset-link"
+                    id="reset-password"
                   />
                 </div>
               </form>
@@ -135,4 +151,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ResetPassword;

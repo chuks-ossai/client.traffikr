@@ -1,25 +1,54 @@
-import { useRouter } from 'next/router'
-import nProgress from 'nprogress';
-import { useEffect } from 'react';
-import '../styles/globals.css'
-import 'nprogress/nprogress.css'
+import { useRouter } from "next/router";
+import nProgress from "nprogress";
+import { useEffect } from "react";
+// import Axios from "axios";
+// import { SWRConfig } from "swr";
+
+import "../styles/globals.css";
+import "nprogress/nprogress.css";
+import Head from "next/head";
+
+// Axios.defaults.baseURL = process.env.NEXT_SERVER_BASE_URL;
+// Axios.defaults.withCredentials = true;
+
+// const fetcher = async (url) => {
+//   try {
+//     const res = await Axios.get(url);
+//     return res.data;
+//   } catch (err) {
+//     throw err.response.data;
+//   }
+// };
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
   useEffect(() => {
     const handleRouteChange = () => {
-      console.log('rout chenage')
       nProgress.start();
-    }
-    router.events.on('routeChangeStart', url => nProgress.start())
-    router.events.on('routeChangeComplete',url => nProgress.done())
+    };
+    router.events.on("routeChangeStart", (url) => nProgress.start());
+    router.events.on("routeChangeComplete", (url) => nProgress.done());
 
     return () => {
-      router.events.off('routeChangeStart', url => nProgress.remove())
-    }
-  }, [])
-  return <Component {...pageProps} />
+      router.events.off("routeChangeStart", (url) => nProgress.remove());
+    };
+  }, []);
+  return (
+    <>
+      <Head>
+        <title>Traffikr | </title>
+      </Head>
+      {/* <SWRConfig
+        value={{
+          fetcher,
+          dedupingInterval: 10000,
+        }}
+      > */}
+      <Component {...pageProps} />
+      {/* </SWRConfig> */}
+    </>
+  );
 }
 
-export default MyApp
+export default MyApp;
