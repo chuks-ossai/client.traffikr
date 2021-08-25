@@ -7,10 +7,9 @@ import CustomModal from "../CustomModal";
 import CategoryForm from "./CategoryForm";
 import { Button, Col, Row } from "react-bootstrap";
 
-const Categories = ({ token }) => {
+const Categories = ({ token, data }) => {
   const [processing, setProcessing] = useState(false);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [toastDetails, setToastDetails] = useState({
     show: false,
     title: "",
@@ -47,7 +46,6 @@ const Categories = ({ token }) => {
           type: "success",
           message: response.data.Results[0].message,
         });
-        setSubmitSuccess(true);
         setShowCategoryForm(false);
       } else {
         setToastDetails({
@@ -55,11 +53,9 @@ const Categories = ({ token }) => {
           type: "danger",
           message: response.data.ErrorMessage || "Unable to login user",
         });
-        setSubmitSuccess(false);
       }
     } catch (err) {
       console.log(err);
-      setSubmitSuccess(false);
       setProcessing(false);
       setToastDetails({
         show: true,
@@ -91,6 +87,10 @@ const Categories = ({ token }) => {
         </Col>
       </Row>
 
+      <Row>
+        <Col>{JSON.stringify(data)}</Col>
+      </Row>
+
       <CustomModal show={showCategoryForm} onClose={onClose}>
         <CategoryForm
           onSubmit={onSubmit}
@@ -100,6 +100,20 @@ const Categories = ({ token }) => {
       </CustomModal>
     </div>
   );
+};
+
+Categories.getInitialProps = async () => {
+  try {
+    const response = await axios.get(`${baseURL}/category/getAll`);
+
+    return {
+      data: response.data.Results,
+    };
+  } catch (err) {
+    return {
+      data: [],
+    };
+  }
 };
 
 export default Categories;

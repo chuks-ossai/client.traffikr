@@ -5,7 +5,7 @@ import Tab from "react-bootstrap/Tab";
 import { Col, Nav, Row } from "react-bootstrap";
 import Categories from "@traffikr/components/Categories";
 
-const Admin = ({ user, token }) => {
+const Admin = ({ user, token, categories }) => {
   return (
     <Layout>
       <div className="container-fluid container-md mt-5">
@@ -26,7 +26,9 @@ const Admin = ({ user, token }) => {
                 <Tab.Pane eventKey="category">
                   <Categories token={token} />
                 </Tab.Pane>
-                <Tab.Pane eventKey="second">Another tab content</Tab.Pane>
+                <Tab.Pane eventKey="second">
+                  {JSON.stringify(categories)}
+                </Tab.Pane>
               </Tab.Content>
             </Col>
           </Row>
@@ -34,6 +36,21 @@ const Admin = ({ user, token }) => {
       </div>
     </Layout>
   );
+};
+
+Admin.getInitialProps = async () => {
+  console.log("Hello world");
+  try {
+    const response = await axios.get(`${baseURL}/category/getAll`);
+
+    return {
+      categories: response.data.Results,
+    };
+  } catch (err) {
+    return {
+      categories: [],
+    };
+  }
 };
 
 export default withAdmin(Admin);
