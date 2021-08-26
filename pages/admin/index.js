@@ -3,9 +3,11 @@ import withAdmin from "pages/withAdmin";
 
 import Tab from "react-bootstrap/Tab";
 import { Col, Nav, Row } from "react-bootstrap";
-import Categories from "@traffikr/components/Categories";
+// import Categories from "@traffikr/components/Categories";
+import axios from "axios";
+import { baseURL } from "app-config";
 
-const Admin = ({ user, token, categories }) => {
+const Admin = ({ token, categories }) => {
   return (
     <Layout>
       <div className="container-fluid container-md mt-5">
@@ -24,7 +26,7 @@ const Admin = ({ user, token, categories }) => {
             <Col sm={9}>
               <Tab.Content>
                 <Tab.Pane eventKey="category">
-                  <Categories token={token} />
+                  {/* <Categories token={token} /> */}
                 </Tab.Pane>
                 <Tab.Pane eventKey="second">
                   {JSON.stringify(categories)}
@@ -36,21 +38,6 @@ const Admin = ({ user, token, categories }) => {
       </div>
     </Layout>
   );
-};
-
-Admin.getInitialProps = async () => {
-  console.log("Hello world");
-  try {
-    const response = await axios.get(`${baseURL}/category/getAll`);
-
-    return {
-      categories: response.data.Results,
-    };
-  } catch (err) {
-    return {
-      categories: [],
-    };
-  }
 };
 
 export default withAdmin(Admin);

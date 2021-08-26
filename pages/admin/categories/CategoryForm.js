@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -7,8 +7,8 @@ const CategoryForm = ({ onSubmit, processing, onCancel }) => {
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     description: Yup.string().min(
-      28,
-      "Description must be at least 28 characters"
+      20,
+      "Description must be at least 20 characters"
     ),
 
     img: Yup.mixed()

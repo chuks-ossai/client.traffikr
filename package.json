@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "devnode": "node server.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^2.7.1",
@@ -17,9 +18,11 @@
     "next": "11.0.1",
     "nprogress": "^0.2.0",
     "react": "17.0.2",
+    "react-avatar": "^3.10.0",
     "react-bootstrap": "^2.0.0-beta.5",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.12.2",
+    "react-image-file-resizer": "^0.4.7",
     "swr": "^0.5.6",
     "yup": "^0.32.9"
   },

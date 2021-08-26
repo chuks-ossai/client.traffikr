@@ -30,9 +30,7 @@ export const getServerCookie = (key, req) => {
   if (!token) {
     return undefined;
   }
-  console.log("token", token);
   const tokenValue = token.split("=")[1];
-  console.log("token value", tokenValue);
   return tokenValue;
 };
 

@@ -17,15 +17,10 @@ const Activate = () => {
       handleActivate(token, data);
     }
 
-    if (state) {
-      console.log(state);
-    }
-
     return () => {};
   }, [router, state]);
 
   const handleActivate = async (token, data) => {
-    console.log("state", state);
     const res = await axios.post(`${baseURL}/account/activate`, { token });
 
     try {

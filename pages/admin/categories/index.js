@@ -1,11 +1,14 @@
 import { useState } from "react";
+import Resizer from "react-image-file-resizer";
 import Loader from "@traffikr/components/Loader";
 import Toastr from "@traffikr/components/Toastr";
 import { baseURL } from "app-config";
 import axios from "axios";
-import CustomModal from "../CustomModal";
 import CategoryForm from "./CategoryForm";
 import { Button, Col, Row } from "react-bootstrap";
+import CustomModal from "@traffikr/components/CustomModal";
+import { resizeFile } from "helpers/resizeFile";
+import { getCookie } from "helpers/auth";
 
 const Categories = ({ token, data }) => {
   const [processing, setProcessing] = useState(false);
@@ -21,24 +24,15 @@ const Categories = ({ token, data }) => {
   };
 
   const onSubmit = async (data) => {
-    console.log("data", data);
     setProcessing(true);
-    const formData = new FormData();
     try {
-      formData.set("name", data.name);
-      formData.set("description", data.description);
-      formData.set("img", data.img[0]);
-      console.log(formData);
-      const response = await axios.post(
-        `${baseURL}/category/create`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            ContentType: "multipart/form-data",
-          },
-        }
-      );
+      data.img = await resizeFile(data.img[0]);
+      const response = await axios.post(`${baseURL}/category/create`, data, {
+        headers: {
+          Authorization: `Bearer ${getCookie("auth_tok")}`,
+          ContentType: "application/json",
+        },
+      });
       setProcessing(false);
       if (response.data.Success) {
         setToastDetails({
@@ -55,7 +49,6 @@ const Categories = ({ token, data }) => {
         });
       }
     } catch (err) {
-      console.log(err);
       setProcessing(false);
       setToastDetails({
         show: true,
@@ -100,20 +93,6 @@ const Categories = ({ token, data }) => {
       </CustomModal>
     </div>
   );
-};
-
-Categories.getInitialProps = async () => {
-  try {
-    const response = await axios.get(`${baseURL}/category/getAll`);
-
-    return {
-      data: response.data.Results,
-    };
-  } catch (err) {
-    return {
-      data: [],
-    };
-  }
 };
 
 export default Categories;
