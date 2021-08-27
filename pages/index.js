@@ -6,19 +6,6 @@ import { useEffect } from "react";
 import Avatar from "react-avatar";
 
 export default function Home({ categories }) {
-  useEffect(() => {
-    if (categories) {
-      fetch(categories[2]?.img?.url, {
-        method: "HEAD",
-        mode: "no-cors",
-      })
-        .then((res) => console.log(res))
-        .catch((err) => {
-          console.log(err);
-        });
-      console.log(categories[2]?.img?.url);
-    }
-  }, [categories]);
   return (
     <Layout>
       <div className="container mt-5">
@@ -27,7 +14,7 @@ export default function Home({ categories }) {
         </div>
         <div className="row">
           {categories.map((category) => (
-            <div className="col-lg-3 col-md-4 mb-3">
+            <div className="col-lg-3 col-md-4 mb-3" key={category._id}>
               <div className="shadow bg-white rounded d-flex align-items-center justify-content-start px-3 py-2 h-100">
                 {category.img && category.img.url ? (
                   <img
@@ -42,7 +29,7 @@ export default function Home({ categories }) {
                 )}
 
                 <h5 className="text-break">
-                  <Link href="/" key={category._id}>
+                  <Link href="/">
                     <a>{category.name}</a>
                   </Link>
                 </h5>

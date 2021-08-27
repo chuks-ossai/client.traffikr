@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Resizer from "react-image-file-resizer";
 import Loader from "@traffikr/components/Loader";
 import Toastr from "@traffikr/components/Toastr";
 import { baseURL } from "app-config";

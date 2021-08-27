@@ -1,7 +1,11 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import dynamic from "next/dynamic";
+import { Controller, useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import "react-quill/dist/quill.bubble.css";
+const ReactQuill = dynamic(() => import("react-quill"));
+// import ReactQuill from "react-quill";
 
 const CategoryForm = ({ onSubmit, processing, onCancel }) => {
   const validationSchema = Yup.object().shape({
@@ -30,7 +34,7 @@ const CategoryForm = ({ onSubmit, processing, onCancel }) => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
+    control,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
@@ -54,12 +58,30 @@ const CategoryForm = ({ onSubmit, processing, onCancel }) => {
         <label htmlFor="description" className="col-form-label">
           Description:
         </label>
-        <textarea
+        {/* <textarea
           className={`form-control ${errors.description ? "is-invalid" : ""}`}
           id="description"
           name="description"
           {...register("description", { min: 28 })}
-        ></textarea>
+        ></textarea> */}
+        <Controller
+          control={control}
+          name="description"
+          id="description"
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <ReactQuill
+              {...register("description", { min: 28 })}
+              value={value}
+              onChange={onChange}
+              onBlur={onBlur}
+              theme="bubble"
+              ref={ref}
+              className={`form-control ${
+                errors.description ? "is-invalid" : ""
+              }`}
+            />
+          )}
+        />
         <div className="invalid-feedback">{errors?.description?.message}</div>
       </div>
       <div className="mb-3">
