@@ -58,12 +58,6 @@ const CategoryForm = ({ onSubmit, processing, onCancel }) => {
         <label htmlFor="description" className="col-form-label">
           Description:
         </label>
-        {/* <textarea
-          className={`form-control ${errors.description ? "is-invalid" : ""}`}
-          id="description"
-          name="description"
-          {...register("description", { min: 28 })}
-        ></textarea> */}
         <Controller
           control={control}
           name="description"

@@ -1,25 +1,76 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { baseURL } from "app-config";
 import axios from "axios";
+import Select, { components } from "react-select";
+import makeAnimated from "react-select/animated";
+
+const SelectControl = (props) => {
+  useEffect(() => {});
+  return (
+    <>
+      <components.Control
+        className={props?.selectProps?.controlClassName}
+        {...props}
+      >
+        {props.children}
+      </components.Control>
+      <div className="invalid-feedback">
+        {props?.selectProps.controlErrorMsg}
+      </div>
+    </>
+  );
+};
 
 const UserLinkForm = ({ onSubmit, processing, onCancel }) => {
   const [categories, setCategories] = useState([]);
+  const [mediumOptions, setMediumOptions] = useState([
+    {
+      label: "Book",
+      value: "books",
+    },
+    {
+      label: "Video",
+      value: "video",
+    },
+    {
+      label: "Article",
+      value: "article",
+    },
+  ]);
+  const [typeOptions, setTypeOptions] = useState([
+    {
+      label: "Paid",
+      value: "paid",
+    },
+    {
+      label: "Free",
+      value: "free",
+    },
+  ]);
 
   useEffect(() => {
-    axios
-      .get(`${baseURL}/category/getAll`)
-      .then((res) => {
-        if (res.data.Success && res.data.Results) {
-          setCategories(res.data.Results);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    loadCategories();
   }, []);
+
+  const loadCategories = async () => {
+    try {
+      const res = await axios.get(`${baseURL}/category/getAll`);
+
+      if (res.data.Success && res.data.Results) {
+        setCategories(
+          res.data.Results.map((category) => ({
+            label: category.name,
+            value: category._id,
+          }))
+        );
+      }
+    } catch (err) {
+      console.table({ err });
+    }
+  };
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
     type: Yup.string().required("Type is required"),
@@ -33,6 +84,7 @@ const UserLinkForm = ({ onSubmit, processing, onCancel }) => {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
@@ -69,65 +121,99 @@ const UserLinkForm = ({ onSubmit, processing, onCancel }) => {
         <label htmlFor="type" className="col-form-label">
           Type:
         </label>
-        <select
-          className="form-select"
+        <Controller
+          control={control}
           name="type"
           id="type"
-          {...register("type", { required: true })}
-          aria-label="Select Type of link"
-        >
-          <option selected value="free">
-            Free
-          </option>
-          <option value="paid">Paid</option>
-        </select>
-
-        <div className="invalid-feedback">{errors?.type?.message}</div>
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Select
+              {...register("type", { required: true })}
+              // value={value}
+              // onChange={onChange}
+              onChange={(e) => onChange({ target: { value: e.value } })}
+              onBlur={onBlur}
+              ref={ref}
+              controlClassName={`form-control ${
+                errors.type ? "is-invalid" : ""
+              } ps-0 pt-0 pb-0`}
+              closeMenuOnSelect={false}
+              defaultValue={"free"}
+              options={typeOptions}
+              controlErrorMsg={errors?.type?.message}
+              components={{
+                IndicatorSeparator: () => null,
+                animatedComponents: makeAnimated,
+                Control: SelectControl,
+              }}
+            />
+          )}
+        />
       </div>
 
       <div className="mb-3">
         <label htmlFor="medium" className="col-form-label">
           Medium:
         </label>
-        <select
-          className="form-select"
+        <Controller
+          control={control}
           name="medium"
           id="medium"
-          {...register("medium", { required: true })}
-          aria-label="Select Medium through which the information will be passed"
-        >
-          <option selected value="article">
-            Article
-          </option>
-          <option value="book">Book</option>
-          <option value="video">Video</option>
-          <option value="audio">Audio</option>
-        </select>
-
-        <div className="invalid-feedback">{errors?.medium?.message}</div>
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Select
+              {...register("medium", { required: true })}
+              // value={value?.value}
+              // onChange={onChange}
+              onChange={(e) => onChange({ target: { value: e.value } })}
+              onBlur={onBlur}
+              ref={ref}
+              controlClassName={`form-control ${
+                errors.medium ? "is-invalid" : ""
+              } ps-0 pt-0 pb-0`}
+              controlErrorMsg={errors?.medium?.message}
+              closeMenuOnSelect={false}
+              components={{
+                IndicatorSeparator: () => null,
+                animatedComponents: makeAnimated,
+                Control: SelectControl,
+              }}
+              defaultValue={value}
+              options={mediumOptions}
+            />
+          )}
+        />
       </div>
 
       <div className="mb-3">
         <label htmlFor="categories" className="col-form-label">
           Categories:
         </label>
-        <select
-          className="form-select"
-          multiple
-          aria-label="multiple select example"
+        <Controller
+          control={control}
           name="categories"
           id="categories"
-          {...register("categories", { required: true })}
-          aria-label="Select Type of link"
-        >
-          {categories.map((category) => (
-            <option value={category._id} key={category._id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-
-        <div className="invalid-feedback">{errors?.categories?.message}</div>
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Select
+              {...register("categories", { required: true })}
+              // value={value?.value}
+              onChange={onChange}
+              onBlur={onBlur}
+              ref={ref}
+              controlClassName={`form-control ${
+                errors.categories ? "is-invalid" : ""
+              } ps-0 pt-0 pb-0`}
+              controlErrorMsg={errors?.categories?.message}
+              closeMenuOnSelect={false}
+              components={{
+                IndicatorSeparator: () => null,
+                animatedComponents: makeAnimated,
+                Control: SelectControl,
+              }}
+              defaultValue={value}
+              isMulti
+              options={categories}
+            />
+          )}
+        />
       </div>
 
       <div className="mb-3 d-flex justify-content-end align-items-center">

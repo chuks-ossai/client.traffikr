@@ -22,11 +22,14 @@ const UserLink = ({ token, data }) => {
   };
 
   const onSubmit = async (data) => {
+    data.categories = data.categories
+      ? data.categories.map((v) => v.value)
+      : [];
     setProcessing(true);
     try {
       const response = await axios.post(`${baseURL}/link/create`, data, {
         headers: {
-          Authorization: `Bearer ${getCookie("auth_tok")}`,
+          Authorization: `Bearer ${token}`,
           ContentType: "application/json",
         },
       });
@@ -87,11 +90,22 @@ const UserLink = ({ token, data }) => {
           onSubmit={onSubmit}
           processing={processing}
           onCancel={() => setShowLinkForm(false)}
-          categories={[]}
         />
       </CustomModal>
     </div>
   );
+};
+
+UserLink.getInitialProps = async ({ req }) => {
+  try {
+    const token = await getCookie("auth_tok", req);
+
+    return {
+      token,
+    };
+  } catch (err) {
+    console.table({ err });
+  }
 };
 
 export default UserLink;

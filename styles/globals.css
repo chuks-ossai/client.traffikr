@@ -119,3 +119,18 @@ a {
 .category-item {
   width: 45%;
 }
+
+.css-yk16xz-control {
+  border: 1px solid #ced4da !important;
+  height: 100% !important;
+  cursor: pointer !important;
+}
+
+.css-1pahdxg-control {
+  border: 1px solid #86b7fe !important;
+  box-shadow: none !important;
+}
+
+div.form-control {
+  border-color: #ced4da !important;
+}
