@@ -29,7 +29,7 @@ export default function Home({ categories }) {
                 )}
 
                 <h5 className="text-break">
-                  <Link href="/">
+                  <Link href={`links/${category.slug}`}>
                     <a>{category.name}</a>
                   </Link>
                 </h5>
