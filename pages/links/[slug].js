@@ -5,6 +5,7 @@ import { baseURL } from "app-config";
 import axios from "axios";
 import { formatDistance } from "date-fns";
 import { useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const Links = ({ query, links, totalLinks, limit, skip, category }) => {
   const [state, setState] = useState({
@@ -137,18 +138,19 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
             </div>
           ))}
 
-          {state.totalLinks > 0 && state.totalLinks >= state.limit && (
-            <div className="row">
-              <div className="col-12 text-center">
-                <button
-                  className="btn btn-outline-primary"
-                  onClick={handleLoadMore}
-                >
-                  Load More
-                </button>
-              </div>
+          <div className="row">
+            <div className="col-12 text-center">
+              <InfiniteScroll
+                dataLength={state.links.length} //This is important field to render the next data
+                next={() => handleLoadMore()}
+                hasMore={
+                  state.totalLinks > 0 && state.totalLinks >= state.limit
+                }
+                hasChildren={state.totalLinks}
+                loader={<h4>Loading...</h4>}
+              ></InfiniteScroll>
             </div>
-          )}
+          </div>
         </div>
         <div className="col-md-4">{JSON.stringify(links)}</div>
       </div>
