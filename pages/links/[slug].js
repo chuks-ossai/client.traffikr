@@ -15,17 +15,40 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
     category,
   });
 
-  const handleLoadMore = async () => {
-    const toSkip = state.skip + state.limit;
+  const loadData = async (skp, lmt) => {
     const response = await axios.get(
-      `${baseURL}/category/get/${query.slug}?skip=${toSkip}&limit=${state.limit}`
+      `${baseURL}/category/get/${query.slug}?skip=${skp}&limit=${lmt}`
     );
     if (response.data.Success && response.data.Results) {
       setState({
         ...state,
         links: [...state.links, ...response.data.Results.links],
         totalLinks: response.data.Results.links.length,
-        skip: toSkip,
+        skip: skp,
+      });
+    }
+  };
+
+  const handleLoadMore = () => {
+    const toSkip = state.skip + state.limit;
+    loadData(toSkip, state.limit);
+  };
+
+  const handleUpdateClickCount = async (linkId) => {
+    const response = await axios.put(
+      `${baseURL}/link/update-clicks/${linkId}`,
+      {}
+    );
+    if (response.data.Success && response.data.Results) {
+      const newClickCount = response.data.Results[0].data.clicks;
+      setState({
+        ...state,
+        links: state.links.map((link) => {
+          if (link._id === linkId) {
+            link.clicks = newClickCount;
+          }
+          return link;
+        }),
       });
     }
   };
@@ -53,7 +76,7 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
       <div className="row mb-3">
         <div className="col-sm-12 col-md-8">
           <h4 className="display-6 text-muted">
-            {state.totalLinks} Link{state.totalLinks > 1 && "s"} Loaded
+            {state.links.length} Link{state.links.length > 1 && "s"} Loaded
           </h4>
         </div>
         <div className="col-md-4">
@@ -66,7 +89,10 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
             <div className="alert alert-primary p-2" key={idx}>
               <div className="container">
                 <div className="row">
-                  <div className="col-md-8">
+                  <div
+                    className="col-md-8"
+                    onClick={() => handleUpdateClickCount(link._id)}
+                  >
                     <a href={link.url} target="_blank">
                       <h5 className="pt-2">{link.title}</h5>
                       <h6 className="pt-2 text-danger" style={{ fontSize: 12 }}>
