@@ -12,6 +12,7 @@ import { isAuth } from "helpers/auth";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { SelectControl } from "@traffikr/components/SelectControl";
+import Chips from "react-chips";
 
 const Register = () => {
   const router = useRouter();
@@ -223,8 +224,10 @@ const Register = () => {
                     render={({ field: { onChange, onBlur, value, ref } }) => (
                       <Select
                         {...register("interestedTopics", { required: false })}
-                        // value={value?.value}
-                        onChange={onChange}
+                        // value={value}
+                        onChange={(e) =>
+                          onChange({ target: { value: e.map((v) => v.value) } })
+                        }
                         onBlur={onBlur}
                         ref={ref}
                         controlClassName={`form-control form-control-lg ${
@@ -244,7 +247,34 @@ const Register = () => {
                     )}
                   />
                 </div>
+
                 <div className="mb-3">
+                  <label htmlFor="otherTopics" className="col-form-label">
+                    Other Topic of Interest:
+                  </label>
+                  <Controller
+                    control={control}
+                    name="otherTopics"
+                    id="otherTopics"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Chips
+                        value={value}
+                        onChange={(e) => onChange({ target: { value: e } })}
+                        onBlur={onBlur}
+                        ref={ref}
+                        suggestions={[
+                          "Politics",
+                          "Sports",
+                          "News",
+                          "Career",
+                          "Entertainment",
+                          "Education",
+                        ]}
+                      />
+                    )}
+                  />
+                </div>
+                {/* <div className="mb-3">
                   <label htmlFor="otherTopics" className="form-label">
                     Other Topic of Interest:
                   </label>
@@ -261,7 +291,7 @@ const Register = () => {
                   <div className="invalid-feedback">
                     {errors?.otherTopics?.message}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="mb-3 form-check">
                   <input
