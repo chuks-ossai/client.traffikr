@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import axios from "axios";
@@ -9,15 +9,41 @@ import Loader from "@traffikr/components/Loader";
 import Toastr from "@traffikr/components/Toastr";
 import { baseURL } from "app-config";
 import { isAuth } from "helpers/auth";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
+import { SelectControl } from "@traffikr/components/SelectControl";
 
 const Register = () => {
   const router = useRouter();
   const [processing, setProcessing] = useState(false);
+  const [categories, setCategories] = useState([]);
   const [toastDetails, setToastDetails] = useState({
     show: false,
     title: "",
     type: "",
   });
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const loadCategories = async () => {
+    try {
+      const res = await axios.get(`${baseURL}/category/getAll`);
+
+      if (res.data.Success && res.data.Results) {
+        setCategories(
+          res.data.Results.map((category) => ({
+            label: category.name,
+            value: category._id,
+          }))
+        );
+      }
+    } catch (err) {
+      console.table({ err });
+    }
+  };
+
   const handleCloseToast = () => {
     setToastDetails(null);
   };
@@ -45,6 +71,7 @@ const Register = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
@@ -185,6 +212,57 @@ const Register = () => {
                     {errors?.password?.message}
                   </div>
                 </div>
+                <div className="mb-3">
+                  <label htmlFor="interestedTopics" className="col-form-label">
+                    Interested Topics:
+                  </label>
+                  <Controller
+                    control={control}
+                    name="interestedTopics"
+                    id="interestedTopics"
+                    render={({ field: { onChange, onBlur, value, ref } }) => (
+                      <Select
+                        {...register("interestedTopics", { required: false })}
+                        // value={value?.value}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        ref={ref}
+                        controlClassName={`form-control form-control-lg ${
+                          errors.interestedTopics ? "is-invalid" : ""
+                        } ps-0 pt-0 pb-0`}
+                        controlErrorMsg={errors?.interestedTopics?.message}
+                        closeMenuOnSelect={false}
+                        components={{
+                          IndicatorSeparator: () => null,
+                          animatedComponents: makeAnimated,
+                          Control: SelectControl,
+                        }}
+                        defaultValue={value}
+                        isMulti
+                        options={categories}
+                      />
+                    )}
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="otherTopics" className="form-label">
+                    Other Topic of Interest:
+                  </label>
+                  <input
+                    type="text"
+                    className={`form-control form-control-lg ${
+                      errors.otherTopics ? "is-invalid" : ""
+                    }`}
+                    name="otherTopics"
+                    id="otherTopics"
+                    placeholder="Please enter other topics that are not in the list above"
+                    {...register("otherTopics", { required: true })}
+                  />
+                  <div className="invalid-feedback">
+                    {errors?.otherTopics?.message}
+                  </div>
+                </div>
+
                 <div className="mb-3 form-check">
                   <input
                     className={`form-check-input ${

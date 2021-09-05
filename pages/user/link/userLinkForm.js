@@ -4,25 +4,9 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { baseURL } from "app-config";
 import axios from "axios";
-import Select, { components } from "react-select";
+import Select from "react-select";
 import makeAnimated from "react-select/animated";
-
-const SelectControl = (props) => {
-  useEffect(() => {});
-  return (
-    <>
-      <components.Control
-        className={props?.selectProps?.controlClassName}
-        {...props}
-      >
-        {props.children}
-      </components.Control>
-      <div className="invalid-feedback">
-        {props?.selectProps.controlErrorMsg}
-      </div>
-    </>
-  );
-};
+import { SelectControl } from "@traffikr/components/SelectControl";
 
 const UserLinkForm = ({ onSubmit, processing, onCancel }) => {
   const [categories, setCategories] = useState([]);
@@ -161,8 +145,6 @@ const UserLinkForm = ({ onSubmit, processing, onCancel }) => {
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Select
               {...register("medium", { required: true })}
-              // value={value?.value}
-              // onChange={onChange}
               onChange={(e) => onChange({ target: { value: e.value } })}
               onBlur={onBlur}
               ref={ref}
