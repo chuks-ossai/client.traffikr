@@ -1,13 +1,33 @@
 import Layout from "@traffikr/components/Layout";
 import withAdmin from "pages/withAdmin";
-
 import Tab from "react-bootstrap/Tab";
 import { Col, Nav, Row } from "react-bootstrap";
-// import Categories from "@traffikr/components/Categories";
+import Categories from "@traffikr/components/Categories";
 import axios from "axios";
 import { baseURL } from "app-config";
+import { useEffect, useState } from "react";
 
-const Admin = ({ token, categories }) => {
+const Admin = ({ token }) => {
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const reloadData = () => {
+    loadCategories();
+  };
+
+  const loadCategories = async () => {
+    const res = await axios.get(`${baseURL}/category/getAll`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ContentType: "application/json",
+      },
+    });
+    if (res.data.Success && res.data.Results) {
+      setCategories(res.data.Results);
+    }
+  };
   return (
     <Layout>
       <div className="container-fluid container-md mt-5">
@@ -19,17 +39,21 @@ const Admin = ({ token, categories }) => {
                   <Nav.Link eventKey="category">Category</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link eventKey="second">Tab 2</Nav.Link>
+                  <Nav.Link eventKey="second">Links</Nav.Link>
                 </Nav.Item>
               </Nav>
             </Col>
             <Col sm={9}>
               <Tab.Content>
                 <Tab.Pane eventKey="category">
-                  {/* <Categories token={token} /> */}
+                  <Categories
+                    token={token}
+                    data={categories}
+                    reloadData={reloadData}
+                  />
                 </Tab.Pane>
                 <Tab.Pane eventKey="second">
-                  {JSON.stringify(categories)}
+                  {/* {JSON.stringify(categories)} */}
                 </Tab.Pane>
               </Tab.Content>
             </Col>

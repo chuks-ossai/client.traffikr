@@ -1,13 +1,19 @@
 import React from "react";
-import dynamic from "next/dynamic";
+
 import { Controller, useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import "react-quill/dist/quill.bubble.css";
-const ReactQuill = dynamic(() => import("react-quill"));
+
 // import ReactQuill from "react-quill";
 
-const CategoryForm = ({ onSubmit, processing, onCancel }) => {
+const CategoryForm = ({
+  onSubmit,
+  processing,
+  onCancel,
+  ReactQuill,
+  category,
+}) => {
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     description: Yup.string().min(
@@ -39,8 +45,12 @@ const CategoryForm = ({ onSubmit, processing, onCancel }) => {
     resolver: yupResolver(validationSchema),
   });
 
+  const onSubmitForm = (data) => {
+    onSubmit && onSubmit(data, category?.slug);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmitForm)}>
       <div className="mb-3">
         <label htmlFor="name" className="col-form-label">
           Name:
@@ -51,6 +61,7 @@ const CategoryForm = ({ onSubmit, processing, onCancel }) => {
           id="name"
           name="name"
           {...register("name", { required: true })}
+          value={category?.name}
         />
         <div className="invalid-feedback">{errors?.name?.message}</div>
       </div>
@@ -65,7 +76,7 @@ const CategoryForm = ({ onSubmit, processing, onCancel }) => {
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <ReactQuill
               {...register("description", { min: 28 })}
-              value={value}
+              value={category?.description || value}
               onChange={onChange}
               onBlur={onBlur}
               theme="bubble"

@@ -87,7 +87,7 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
       <div className="row">
         <div className="col-12 col-md-8">
           {state.links.map((link, idx) => (
-            <div className="alert alert-primary p-2" key={idx}>
+            <div className="alert alert-primary p-2" key={link._id}>
               <div className="container">
                 <div className="row">
                   <div
@@ -107,11 +107,15 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
                         <span className="badge bg-info me-5">
                           {link.medium}
                         </span>
-                        {link.categories.map((category, idx) => (
-                          <span className="badge bg-warning me-2" key={idx}>
-                            {category.name}
-                          </span>
-                        ))}
+                        {link.categories &&
+                          link.categories.map((category, idx) => (
+                            <span
+                              className="badge bg-warning me-2"
+                              key={category._id}
+                            >
+                              {category.name}
+                            </span>
+                          ))}
                       </div>
                     </div>
                   </div>
