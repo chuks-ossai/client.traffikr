@@ -6,6 +6,8 @@ import Categories from "@traffikr/components/Categories";
 import axios from "axios";
 import { baseURL } from "app-config";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+const ReactQuill = dynamic(() => import("react-quill"));
 
 const Admin = ({ token }) => {
   const [categories, setCategories] = useState([]);
@@ -50,6 +52,7 @@ const Admin = ({ token }) => {
                     token={token}
                     data={categories}
                     reloadData={reloadData}
+                    ReactQuill={ReactQuill}
                   />
                 </Tab.Pane>
                 <Tab.Pane eventKey="second">

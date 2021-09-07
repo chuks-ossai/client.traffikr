@@ -7,16 +7,15 @@ import CategoryForm from "./CategoryForm";
 import { Button, Col, Row, Table } from "react-bootstrap";
 import CustomModal from "@traffikr/components/CustomModal";
 import { resizeFile } from "helpers/resizeFile";
-import { getCookie } from "helpers/auth";
-import dynamic from "next/dynamic";
-import renderHTML from "react-render-html";
 import { formatDistance } from "date-fns";
-const ReactQuill = dynamic(() => import("react-quill"));
+import Link from "next/link";
+import Alert from "../Alert";
 
-const Categories = ({ token, data, reloadData }) => {
+const Categories = ({ token, data, reloadData, ReactQuill }) => {
   const [processing, setProcessing] = useState(false);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [category, setCategory] = useState(null);
+  const [deleteSlug, setDeleteSlug] = useState(null);
   const [toastDetails, setToastDetails] = useState({
     show: false,
     title: "",
@@ -39,13 +38,13 @@ const Categories = ({ token, data, reloadData }) => {
       const response = editMode
         ? await axios.post(`${baseURL}/category/create`, data, {
             headers: {
-              Authorization: `Bearer ${getCookie("auth_tok")}`,
+              Authorization: `Bearer ${token}`,
               ContentType: "application/json",
             },
           })
         : await axios.put(`${baseURL}/category/update/${slug}`, data, {
             headers: {
-              Authorization: `Bearer ${getCookie("auth_tok")}`,
+              Authorization: `Bearer ${token}`,
               ContentType: "application/json",
             },
           });
@@ -78,6 +77,50 @@ const Categories = ({ token, data, reloadData }) => {
 
   const onClose = () => {
     setShowCategoryForm(false);
+    setDeleteSlug(null);
+  };
+
+  const onDeleteIconClick = (slug) => {
+    setDeleteSlug(slug);
+  };
+
+  const onConfirmDelete = async () => {
+    try {
+      setProcessing(true);
+      const res = await axios.delete(
+        `${baseURL}/category/delete/${deleteSlug}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            ContentType: "application/json",
+          },
+        }
+      );
+
+      if (res.data.Success && res.data.Results) {
+        setProcessing(false);
+        setDeleteSlug(null);
+        setToastDetails({
+          show: true,
+          type: "success",
+          message: res.data.Results[0].message,
+        });
+        reloadData();
+      } else {
+        setToastDetails({
+          show: true,
+          type: "danger",
+          message: res.data.ErrorMessage || "Unable to delete category",
+        });
+      }
+    } catch (err) {
+      setProcessing(false);
+      setToastDetails({
+        show: true,
+        type: "danger",
+        message: "Something went wrong. Unable to delete category",
+      });
+    }
   };
 
   return (
@@ -92,8 +135,12 @@ const Categories = ({ token, data, reloadData }) => {
       <Row className="mb-3">
         <Col className="d-flex align-items-center justify-content-between">
           <h1>Categories</h1>
-          <Button variant="primary" onClick={() => setShowCategoryForm(true)}>
-            Add
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={() => setShowCategoryForm(true)}
+          >
+            <i class="las la-plus"></i>&nbsp;&nbsp;Add
           </Button>
         </Col>
       </Row>
@@ -137,16 +184,25 @@ const Categories = ({ token, data, reloadData }) => {
                     })}
                   </td>
                   <td style={{ padding: 23 }}>
-                    <span className="text-default">
-                      <i className="las la-eye"></i>
-                    </span>
+                    <Link href={`/admin/category/${category.slug}`}>
+                      <a className="me-2">
+                        <span className="text-default">
+                          <i className="las la-eye"></i>
+                        </span>
+                      </a>
+                    </Link>
                     <span
                       className="text-info"
                       onClick={() => onEditClick(category)}
+                      style={{ cursor: "pointer" }}
                     >
                       <i className="las la-edit"></i>
                     </span>
-                    <span className="text-danger">
+                    <span
+                      onClick={() => onDeleteIconClick(category.slug)}
+                      className="text-danger ms-2"
+                      style={{ cursor: "pointer" }}
+                    >
                       <i className="las la-trash"></i>
                     </span>
                   </td>
@@ -164,6 +220,20 @@ const Categories = ({ token, data, reloadData }) => {
           onCancel={() => setShowCategoryForm(false)}
           ReactQuill={ReactQuill}
           category={category}
+        />
+      </CustomModal>
+      <CustomModal
+        title="Delete Category"
+        show={deleteSlug}
+        onClose={onClose}
+        size="sm"
+      >
+        <Alert
+          info="Are you sure you want to delete this category?"
+          onSubmit={onSubmit}
+          processing={processing}
+          onCancel={() => setShowCategoryForm(false)}
+          onConfirm={onConfirmDelete}
         />
       </CustomModal>
     </div>
