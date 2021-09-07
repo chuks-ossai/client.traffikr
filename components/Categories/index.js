@@ -34,8 +34,13 @@ const Categories = ({ token, data, reloadData, ReactQuill }) => {
   const onSubmit = async (data, slug) => {
     setProcessing(true);
     try {
-      data.img = await resizeFile(data.img[0]);
-      const response = editMode
+      if (data.img.length) {
+        data.img = await resizeFile(data.img[0]);
+      } else {
+        data.img = null;
+      }
+
+      const response = !slug
         ? await axios.post(`${baseURL}/category/create`, data, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -62,15 +67,16 @@ const Categories = ({ token, data, reloadData, ReactQuill }) => {
         setToastDetails({
           show: true,
           type: "danger",
-          message: response.data.ErrorMessage || "Unable to login user",
+          message: response.data.ErrorMessage || "Unable to save category",
         });
       }
     } catch (err) {
+      console.log(err);
       setProcessing(false);
       setToastDetails({
         show: true,
         type: "danger",
-        message: "Something went wrong. Unable to create category",
+        message: "Something went wrong. Unable to save category",
       });
     }
   };
