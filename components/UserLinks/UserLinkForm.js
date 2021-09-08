@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { baseURL } from "app-config";
-import axios from "axios";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { SelectControl } from "@traffikr/components/SelectControl";
 
-const UserLinkForm = ({ onSubmit, processing, onCancel }) => {
-  const [categories, setCategories] = useState([]);
+const LinkForm = ({
+  onSubmit,
+  processing,
+  onCancel,
+  categories = [],
+  link,
+}) => {
   const [mediumOptions, setMediumOptions] = useState([
     {
       label: "Book",
@@ -35,26 +38,6 @@ const UserLinkForm = ({ onSubmit, processing, onCancel }) => {
     },
   ]);
 
-  useEffect(() => {
-    loadCategories();
-  }, []);
-
-  const loadCategories = async () => {
-    try {
-      const res = await axios.get(`${baseURL}/category/getAll`);
-
-      if (res.data.Success && res.data.Results) {
-        setCategories(
-          res.data.Results.map((category) => ({
-            label: category.name,
-            value: category._id,
-          }))
-        );
-      }
-    } catch (err) {
-      console.table({ err });
-    }
-  };
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
     type: Yup.string().required("Type is required"),
@@ -73,8 +56,12 @@ const UserLinkForm = ({ onSubmit, processing, onCancel }) => {
     resolver: yupResolver(validationSchema),
   });
 
+  const onSubmitForm = (data) => {
+    onSubmit && onSubmit(data, link?.slug);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmitForm)}>
       <div className="mb-3">
         <label htmlFor="title" className="col-form-label">
           Title:
@@ -120,7 +107,6 @@ const UserLinkForm = ({ onSubmit, processing, onCancel }) => {
               controlClassName={`form-control ${
                 errors.type ? "is-invalid" : ""
               } ps-0 pt-0 pb-0`}
-              closeMenuOnSelect={false}
               defaultValue={"free"}
               options={typeOptions}
               controlErrorMsg={errors?.type?.message}
@@ -152,7 +138,6 @@ const UserLinkForm = ({ onSubmit, processing, onCancel }) => {
                 errors.medium ? "is-invalid" : ""
               } ps-0 pt-0 pb-0`}
               controlErrorMsg={errors?.medium?.message}
-              closeMenuOnSelect={false}
               components={{
                 IndicatorSeparator: () => null,
                 animatedComponents: makeAnimated,
@@ -177,7 +162,9 @@ const UserLinkForm = ({ onSubmit, processing, onCancel }) => {
             <Select
               {...register("categories", { required: true })}
               // value={value?.value}
-              onChange={onChange}
+              onChange={(e) =>
+                onChange({ target: { value: e.map((v) => v.value) } })
+              }
               onBlur={onBlur}
               ref={ref}
               controlClassName={`form-control ${
@@ -216,4 +203,4 @@ const UserLinkForm = ({ onSubmit, processing, onCancel }) => {
   );
 };
 
-export default UserLinkForm;
+export default LinkForm;

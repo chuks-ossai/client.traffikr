@@ -8,6 +8,7 @@ const withUser = (Page) => {
 
   WithAuthUser.getInitialProps = async (ctx) => {
     let user = null;
+    let links = null;
     const token = await getCookie("auth_tok", ctx.req);
     if (token) {
       try {
@@ -18,13 +19,16 @@ const withUser = (Page) => {
           },
         });
         if (res?.data?.Success && res?.data?.Results) {
-          user = res.data.Results;
+          user = res.data.Results[0].profile;
+          links = res.data.Results[0].links;
         } else {
           user = null;
+          links = null;
         }
       } catch (err) {
         if (err?.response?.status === 401) {
           user = null;
+          links = null;
         }
       }
     }
@@ -38,6 +42,7 @@ const withUser = (Page) => {
         ...(Page.getInitialProps ? Page.getInitialProps(ctx) : {}),
         user,
         token,
+        links,
       };
     }
   };
