@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { SelectControl } from "@traffikr/components/SelectControl";
+import { string } from "yup/lib/locale";
 
-const LinkForm = ({
+const UserLinkForm = ({
   onSubmit,
   processing,
   onCancel,
@@ -40,8 +41,12 @@ const LinkForm = ({
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
-    type: Yup.string().required("Type is required"),
-    medium: Yup.string().required("Medium is required"),
+    type: Yup.object({ label: Yup.string(), value: Yup.string() }).required(
+      "Type is required"
+    ),
+    medium: Yup.object({ label: Yup.string(), value: Yup.string() }).required(
+      "Medium is required"
+    ),
     url: Yup.string()
       .required("URL is required")
       .max(256, "URL should not be more than 256 characters"),
@@ -52,12 +57,48 @@ const LinkForm = ({
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
+  useEffect(() => {
+    if (link) {
+      // console.log(returnSelectValue(link.categories));
+      const fields = ["title", "url", "type", "medium", "categories"];
+      fields.forEach((field) => {
+        if (field === "type") {
+          const val = typeOptions.find((v) => v.value === link[field]);
+          console.log(field, val);
+          setValue(field, val);
+        } else if (field === "medium") {
+          const val = mediumOptions.find((v) => v.value === link[field]);
+          console.log(field, val);
+          setValue(field, val);
+        } else if (field === "categories") {
+          console.log("fields", link[field]);
+          const vals = link[field].map((l) => ({
+            label: l.name,
+            value: l._id,
+          }));
+          setValue(field, vals);
+        } else {
+          setValue(field, link[field]);
+        }
+      });
+    }
+  }, [link]);
+
   const onSubmitForm = (data) => {
-    onSubmit && onSubmit(data, link?.slug);
+    const { title, url, type, medium, categories } = data;
+    const payload = {
+      title,
+      url,
+      type: type.value,
+      medium: medium.value,
+      categories: categories.map((v) => v.value),
+    };
+    onSubmit && onSubmit(payload, link?._id);
   };
 
   return (
@@ -99,15 +140,17 @@ const LinkForm = ({
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Select
               {...register("type", { required: true })}
-              // value={value}
+              value={value}
               // onChange={onChange}
-              onChange={(e) => onChange({ target: { value: e.value } })}
+              onChange={(e) => {
+                console.log(e);
+                onChange({ target: { value: e } });
+              }}
               onBlur={onBlur}
               ref={ref}
               controlClassName={`form-control ${
                 errors.type ? "is-invalid" : ""
               } ps-0 pt-0 pb-0`}
-              defaultValue={"free"}
               options={typeOptions}
               controlErrorMsg={errors?.type?.message}
               components={{
@@ -131,7 +174,8 @@ const LinkForm = ({
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Select
               {...register("medium", { required: true })}
-              onChange={(e) => onChange({ target: { value: e.value } })}
+              value={value}
+              onChange={(e) => onChange({ target: { value: e } })}
               onBlur={onBlur}
               ref={ref}
               controlClassName={`form-control ${
@@ -143,7 +187,6 @@ const LinkForm = ({
                 animatedComponents: makeAnimated,
                 Control: SelectControl,
               }}
-              defaultValue={value}
               options={mediumOptions}
             />
           )}
@@ -154,6 +197,7 @@ const LinkForm = ({
         <label htmlFor="categories" className="col-form-label">
           Categories:
         </label>
+
         <Controller
           control={control}
           name="categories"
@@ -161,10 +205,10 @@ const LinkForm = ({
           render={({ field: { onChange, onBlur, value, ref } }) => (
             <Select
               {...register("categories", { required: true })}
-              // value={value?.value}
-              onChange={(e) =>
-                onChange({ target: { value: e.map((v) => v.value) } })
-              }
+              value={value}
+              onChange={(selected) => {
+                onChange({ target: { value: selected } });
+              }}
               onBlur={onBlur}
               ref={ref}
               controlClassName={`form-control ${
@@ -196,11 +240,13 @@ const LinkForm = ({
         <input
           type="submit"
           className="btn btn-primary"
-          value={processing ? "Saving..." : "Create Link"}
+          value={
+            processing ? "Saving..." : (link ? "Update" : "Create") + " Link"
+          }
         />
       </div>
     </form>
   );
 };
 
-export default LinkForm;
+export default UserLinkForm;

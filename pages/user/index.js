@@ -10,12 +10,16 @@ import { baseURL } from "app-config";
 
 const User = ({ user, links, token }) => {
   const [categories, setCategories] = useState([]);
+  const [userLinks, setUserLinks] = useState([]);
 
   useEffect(() => {
     loadCategories();
+    loadLinks();
+    console.log("load links");
   }, []);
+
   const reloadData = () => {
-    // loadCategories();
+    loadLinks();
   };
 
   const loadCategories = async () => {
@@ -34,10 +38,26 @@ const User = ({ user, links, token }) => {
       );
     }
   };
+
+  const loadLinks = async () => {
+    const res = await axios.get(`${baseURL}/link/userlinks`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ContentType: "application/json",
+      },
+    });
+    if (res.data.Success && res.data.Results) {
+      console.log(res.data);
+      setUserLinks(res.data.Results);
+    } else {
+      console.log(res.data);
+    }
+  };
+
   return (
     <Layout>
       <div className="container-fluid container-md mt-5">
-        <Tab.Container id="left-tabs-example" defaultActiveKey="category">
+        <Tab.Container id="left-tabs-example" defaultActiveKey="links">
           <Row>
             <Col sm={3}>
               <Nav variant="pills" className="flex-column">
@@ -54,7 +74,7 @@ const User = ({ user, links, token }) => {
                 <Tab.Pane eventKey="links">
                   <UserLinks
                     token={token}
-                    data={links}
+                    data={userLinks || links}
                     reloadData={reloadData}
                     categories={categories}
                   />

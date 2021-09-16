@@ -4,6 +4,8 @@ import { useRouter } from "next/router";
 const Nav = () => {
   const router = useRouter();
 
+  console.log(isAuth());
+
   const handleLogout = () => {
     logout(() => {
       router.push("/login");
@@ -12,9 +14,9 @@ const Nav = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light position-sticky">
       <div className="container-fluid">
-        <a className="navbar-brand" href="/">
-          Traffikr.IO
-        </a>
+        <Link href="/">
+          <a className="navbar-brand">Traffikr.IO</a>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -41,7 +43,11 @@ const Nav = () => {
               {isAuth() ? (
                 <>
                   <li className="nav-item">
-                    <Link href="#">
+                    <Link
+                      href={`${
+                        isAuth().role === "subscriber" ? "/user" : "/admin"
+                      }`}
+                    >
                       <a className="nav-link active mr-3" aria-current="page">
                         {isAuth().fullName}
                       </a>

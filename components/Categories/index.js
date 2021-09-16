@@ -146,7 +146,7 @@ const Categories = ({ token, data, reloadData, ReactQuill }) => {
             variant="primary"
             onClick={() => setShowCategoryForm(true)}
           >
-            <i class="las la-plus"></i>&nbsp;&nbsp;Add
+            <i className="las la-plus"></i>&nbsp;&nbsp;Add
           </Button>
         </Col>
       </Row>

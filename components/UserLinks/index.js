@@ -15,7 +15,7 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
   const [processing, setProcessing] = useState(false);
   const [showLinkForm, setShowLinkForm] = useState(false);
   const [link, setLink] = useState(null);
-  const [deleteSlug, setDeleteSlug] = useState(null);
+  const [deleteLinkId, setDeleteLinkId] = useState(null);
   const [toastDetails, setToastDetails] = useState({
     show: false,
     title: "",
@@ -31,17 +31,17 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
     setShowLinkForm(true);
   };
 
-  const onSubmit = async (data, slug) => {
+  const onSubmit = async (data, linkId) => {
     setProcessing(true);
     try {
-      const response = !slug
+      const response = !linkId
         ? await axios.post(`${baseURL}/link/create`, data, {
             headers: {
               Authorization: `Bearer ${token}`,
               ContentType: "application/json",
             },
           })
-        : await axios.put(`${baseURL}/link/update/${slug}`, data, {
+        : await axios.put(`${baseURL}/link/update/${linkId}`, data, {
             headers: {
               Authorization: `Bearer ${token}`,
               ContentType: "application/json",
@@ -54,7 +54,7 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
           type: "success",
           message: response.data.Results[0].message,
         });
-        slug && setLink(null);
+        linkId && setLink(null);
         reloadData();
         setShowLinkForm(false);
       } else {
@@ -77,18 +77,19 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
 
   const onClose = () => {
     setShowLinkForm(false);
-    setDeleteSlug(null);
+    setDeleteLinkId(null);
+    setLink(null);
   };
 
-  const onDeleteIconClick = (slug) => {
-    setDeleteSlug(slug);
+  const onDeleteIconClick = (linkId) => {
+    setDeleteLinkId(linkId);
   };
 
   const onConfirmDelete = async () => {
     try {
       setProcessing(true);
       const res = await axios.delete(
-        `${baseURL}/category/delete/${deleteSlug}`,
+        `${baseURL}/category/delete/${deleteLinkId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -99,7 +100,7 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
 
       if (res.data.Success && res.data.Results) {
         setProcessing(false);
-        setDeleteSlug(null);
+        setDeleteLinkId(null);
         setToastDetails({
           show: true,
           type: "success",
@@ -140,7 +141,7 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
             variant="primary"
             onClick={() => setShowLinkForm(true)}
           >
-            <i class="las la-plus"></i>&nbsp;&nbsp;Add
+            <i className="las la-plus"></i>&nbsp;&nbsp;Add
           </Button>
         </Col>
       </Row>
@@ -189,7 +190,7 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
                           <span
                             className="badge bg-danger rounded-pill"
                             style={{ cursor: "pointer" }}
-                            onClick={(e) => onDeleteIconClick(link.slug)}
+                            onClick={(e) => onDeleteIconClick(link._id)}
                           >
                             <i className="las la-trash"></i>
                           </span>
@@ -226,18 +227,22 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
         </Col>
       </Row>
 
-      <CustomModal show={showLinkForm} onClose={onClose}>
+      <CustomModal
+        show={showLinkForm}
+        onClose={onClose}
+        title={link ? "Update Link" : "Create Link"}
+      >
         <UserLinkForm
           onSubmit={onSubmit}
           processing={processing}
-          onCancel={() => setShowLinkForm(false)}
+          onCancel={onClose}
           categories={categories}
           link={link}
         />
       </CustomModal>
       <CustomModal
         title="Delete Link"
-        show={deleteSlug}
+        show={deleteLinkId}
         onClose={onClose}
         size="sm"
       >
@@ -245,7 +250,7 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
           info="Are you sure you want to delete this link?"
           onSubmit={onSubmit}
           processing={processing}
-          onCancel={() => setShowLinkForm(false)}
+          onCancel={onClose}
           onConfirm={onConfirmDelete}
         />
       </CustomModal>

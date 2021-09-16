@@ -129,7 +129,7 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
                         by&nbsp;
                       </span>
                       <span className="fw-bold text-dark">
-                        {link.postedBy.username}
+                        {link?.postedBy?.username}
                       </span>
                     </span>
                     <div>
