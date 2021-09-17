@@ -7,16 +7,26 @@ import axios from "axios";
 import { baseURL } from "app-config";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import AdminLinks from "@traffikr/components/AdminLinks";
 const ReactQuill = dynamic(() => import("react-quill"));
 
 const Admin = ({ token }) => {
   const [categories, setCategories] = useState([]);
+  const [adminLinks, setAdminLinks] = useState([]);
+  const [limit] = useState(4);
+  const [skip, setSkip] = useState(0);
+  const [totalLinks, setTotalLinks] = useState(0);
   useEffect(() => {
     loadCategories();
+    loadLinks();
   }, []);
 
   const reloadData = () => {
     loadCategories();
+  };
+
+  const reloadLinks = () => {
+    loadLinks();
   };
 
   const loadCategories = async () => {
@@ -30,6 +40,30 @@ const Admin = ({ token }) => {
       setCategories(res.data.Results);
     }
   };
+
+  const loadLinks = async (skp = 0, lmt = 4) => {
+    const res = await axios.get(
+      `${baseURL}/link/adminlinks?skip=${skp}&limit=${lmt}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ContentType: "application/json",
+        },
+      }
+    );
+    if (res.data.Success && res.data.Results) {
+      if (skp) {
+        setAdminLinks((prev) => [...prev, ...res.data.Results]);
+      } else {
+        setAdminLinks(res.data.Results);
+      }
+      setSkip(skp);
+      setTotalLinks(res.data.Results.length);
+    } else {
+      console.log(res.data);
+    }
+  };
+
   return (
     <Layout>
       <div className="container-fluid container-md mt-5">
@@ -41,7 +75,7 @@ const Admin = ({ token }) => {
                   <Nav.Link eventKey="category">Category</Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link eventKey="second">Links</Nav.Link>
+                  <Nav.Link eventKey="links">Links</Nav.Link>
                 </Nav.Item>
               </Nav>
             </Col>
@@ -55,8 +89,20 @@ const Admin = ({ token }) => {
                     ReactQuill={ReactQuill}
                   />
                 </Tab.Pane>
-                <Tab.Pane eventKey="second">
-                  {/* {JSON.stringify(categories)} */}
+                <Tab.Pane eventKey="links">
+                  <AdminLinks
+                    token={token}
+                    data={adminLinks}
+                    reloadData={reloadLinks}
+                    categories={categories.map((v) => ({
+                      label: v.name,
+                      value: v._id,
+                    }))}
+                    loadData={loadLinks}
+                    skip={skip}
+                    totalLinks={totalLinks}
+                    limit={limit}
+                  />
                 </Tab.Pane>
               </Tab.Content>
             </Col>
