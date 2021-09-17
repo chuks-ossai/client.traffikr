@@ -43,7 +43,7 @@ const Admin = ({ token }) => {
 
   const loadLinks = async (skp = 0, lmt = 4) => {
     const res = await axios.get(
-      `${baseURL}/link/adminlinks?skip=${skp}&limit=${lmt}`,
+      `${baseURL}/link/admin/getAll?skip=${skp}&limit=${lmt}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

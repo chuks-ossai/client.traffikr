@@ -40,7 +40,7 @@ const User = ({ user, links, token }) => {
   };
 
   const loadLinks = async () => {
-    const res = await axios.get(`${baseURL}/link/userlinks`, {
+    const res = await axios.get(`${baseURL}/link/my/getAll`, {
       headers: {
         Authorization: `Bearer ${token}`,
         ContentType: "application/json",

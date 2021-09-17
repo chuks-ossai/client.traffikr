@@ -39,7 +39,7 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
               ContentType: "application/json",
             },
           })
-        : await axios.put(`${baseURL}/link/update/${linkId}`, data, {
+        : await axios.put(`${baseURL}/link/my/update/${linkId}`, data, {
             headers: {
               Authorization: `Bearer ${token}`,
               ContentType: "application/json",
@@ -86,12 +86,15 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
   const onConfirmDelete = async () => {
     try {
       setProcessing(true);
-      const res = await axios.delete(`${baseURL}/link/delete/${deleteLinkId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          ContentType: "application/json",
-        },
-      });
+      const res = await axios.delete(
+        `${baseURL}/link/my/delete/${deleteLinkId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            ContentType: "application/json",
+          },
+        }
+      );
 
       if (res.data.Success && res.data.Results) {
         setProcessing(false);

@@ -49,7 +49,7 @@ const AdminLinks = ({
               ContentType: "application/json",
             },
           })
-        : await axios.put(`${baseURL}/link/update/${linkId}`, data, {
+        : await axios.put(`${baseURL}/link/admin/update/${linkId}`, data, {
             headers: {
               Authorization: `Bearer ${token}`,
               ContentType: "application/json",
@@ -96,12 +96,15 @@ const AdminLinks = ({
   const onConfirmDelete = async () => {
     try {
       setProcessing(true);
-      const res = await axios.delete(`${baseURL}/link/delete/${deleteLinkId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          ContentType: "application/json",
-        },
-      });
+      const res = await axios.delete(
+        `${baseURL}/link/admin/delete/${deleteLinkId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            ContentType: "application/json",
+          },
+        }
+      );
 
       if (res.data.Success && res.data.Results) {
         setProcessing(false);
