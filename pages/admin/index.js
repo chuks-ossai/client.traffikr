@@ -8,14 +8,24 @@ import { baseURL } from "app-config";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import AdminLinks from "@traffikr/components/AdminLinks";
+import ProfileForm from "@traffikr/components/ProfileForm";
+import Toastr from "@traffikr/components/Toastr";
+import Loader from "@traffikr/components/Loader";
 const ReactQuill = dynamic(() => import("react-quill"));
 
-const Admin = ({ token }) => {
+const Admin = ({ user, token }) => {
   const [categories, setCategories] = useState([]);
   const [adminLinks, setAdminLinks] = useState([]);
   const [limit] = useState(4);
   const [skip, setSkip] = useState(0);
   const [totalLinks, setTotalLinks] = useState(0);
+  const [adminProfile, setAdminProfile] = useState(user[0].profile);
+  const [updatingProfile, setUpdatingProfile] = useState(false);
+  const [toastDetails, setToastDetails] = useState({
+    show: false,
+    title: "",
+    type: "",
+  });
   useEffect(() => {
     loadCategories();
     loadLinks();
@@ -64,8 +74,54 @@ const Admin = ({ token }) => {
     }
   };
 
+  const onUpdateProfile = async (data) => {
+    setUpdatingProfile(true);
+    try {
+      const response = await axios.put(`${baseURL}/user/my/profile`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ContentType: "application/json",
+        },
+      });
+
+      setUpdatingProfile(false);
+      if (response.data.Success) {
+        setToastDetails({
+          show: true,
+          type: "success",
+          message: response.data.Results[0].message,
+        });
+        setAdminProfile(response.data.Results[0].data);
+      } else {
+        setToastDetails({
+          show: true,
+          type: "danger",
+          message: response.data.ErrorMessage || "Unable to save record",
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      setUpdatingProfile(false);
+      setToastDetails({
+        show: true,
+        type: "danger",
+        message: "Something went wrong. Unable to save profile",
+      });
+    }
+  };
+
+  const handleCloseToast = () => {
+    setToastDetails(null);
+  };
+
   return (
     <Layout>
+      <Toastr
+        onClose={handleCloseToast}
+        details={toastDetails}
+        useDefaultDuration
+      />
+      {updatingProfile && <Loader />}
       <div className="container-fluid container-md mt-5">
         <Tab.Container id="left-tabs-example" defaultActiveKey="category">
           <Row>
@@ -76,6 +132,9 @@ const Admin = ({ token }) => {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link eventKey="links">Links</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="profile">Profile</Nav.Link>
                 </Nav.Item>
               </Nav>
             </Col>
@@ -102,6 +161,18 @@ const Admin = ({ token }) => {
                     skip={skip}
                     totalLinks={totalLinks}
                     limit={limit}
+                  />
+                </Tab.Pane>
+
+                <Tab.Pane eventKey="profile">
+                  <ProfileForm
+                    data={adminProfile}
+                    onSubmit={onUpdateProfile}
+                    categories={categories.map((v) => ({
+                      label: v.name,
+                      value: v._id,
+                    }))}
+                    processing={updatingProfile}
                   />
                 </Tab.Pane>
               </Tab.Content>

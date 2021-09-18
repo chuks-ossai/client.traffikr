@@ -274,24 +274,6 @@ const Register = () => {
                     )}
                   />
                 </div>
-                {/* <div className="mb-3">
-                  <label htmlFor="otherTopics" className="form-label">
-                    Other Topic of Interest:
-                  </label>
-                  <input
-                    type="text"
-                    className={`form-control form-control-lg ${
-                      errors.otherTopics ? "is-invalid" : ""
-                    }`}
-                    name="otherTopics"
-                    id="otherTopics"
-                    placeholder="Please enter other topics that are not in the list above"
-                    {...register("otherTopics", { required: true })}
-                  />
-                  <div className="invalid-feedback">
-                    {errors?.otherTopics?.message}
-                  </div>
-                </div> */}
 
                 <div className="mb-3 form-check">
                   <input
