@@ -7,10 +7,20 @@ import { Col, Nav, Row } from "react-bootstrap";
 import UserLinks from "@traffikr/components/UserLinks";
 import axios from "axios";
 import { baseURL } from "app-config";
+import Toastr from "@traffikr/components/Toastr";
+import ProfileForm from "@traffikr/components/ProfileForm";
+import Loader from "@traffikr/components/Loader";
 
 const User = ({ user, links, token }) => {
   const [categories, setCategories] = useState([]);
   const [userLinks, setUserLinks] = useState([]);
+  const [userProfile, setUserProfile] = useState(user);
+  const [updatingProfile, setUpdatingProfile] = useState(false);
+  const [toastDetails, setToastDetails] = useState({
+    show: false,
+    title: "",
+    type: "",
+  });
 
   useEffect(() => {
     loadCategories();
@@ -54,8 +64,54 @@ const User = ({ user, links, token }) => {
     }
   };
 
+  const onUpdateProfile = async (data) => {
+    setUpdatingProfile(true);
+    try {
+      const response = await axios.put(`${baseURL}/user/my/profile`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ContentType: "application/json",
+        },
+      });
+
+      setUpdatingProfile(false);
+      if (response.data.Success) {
+        setToastDetails({
+          show: true,
+          type: "success",
+          message: response.data.Results[0].message,
+        });
+        setUserProfile(response.data.Results[0].data);
+      } else {
+        setToastDetails({
+          show: true,
+          type: "danger",
+          message: response.data.ErrorMessage || "Unable to save record",
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      setUpdatingProfile(false);
+      setToastDetails({
+        show: true,
+        type: "danger",
+        message: "Something went wrong. Unable to save profile",
+      });
+    }
+  };
+
+  const handleCloseToast = () => {
+    setToastDetails(null);
+  };
+
   return (
     <Layout>
+      <Toastr
+        onClose={handleCloseToast}
+        details={toastDetails}
+        useDefaultDuration
+      />
+      {updatingProfile && <Loader />}
       <div className="container-fluid container-md mt-5">
         <Tab.Container id="left-tabs-example" defaultActiveKey="links">
           <Row>
@@ -79,7 +135,15 @@ const User = ({ user, links, token }) => {
                     categories={categories}
                   />
                 </Tab.Pane>
-                <Tab.Pane eventKey="profile">{JSON.stringify(user)}</Tab.Pane>
+
+                <Tab.Pane eventKey="profile">
+                  <ProfileForm
+                    data={userProfile}
+                    onSubmit={onUpdateProfile}
+                    categories={categories}
+                    processing={updatingProfile}
+                  />
+                </Tab.Pane>
               </Tab.Content>
             </Col>
           </Row>
