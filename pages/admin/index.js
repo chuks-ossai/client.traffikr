@@ -11,6 +11,7 @@ import AdminLinks from "@traffikr/components/AdminLinks";
 import ProfileForm from "@traffikr/components/ProfileForm";
 import Toastr from "@traffikr/components/Toastr";
 import Loader from "@traffikr/components/Loader";
+import { updateProfile } from "helpers/auth";
 const ReactQuill = dynamic(() => import("react-quill"));
 
 const Admin = ({ user, token }) => {
@@ -91,7 +92,9 @@ const Admin = ({ user, token }) => {
           type: "success",
           message: response.data.Results[0].message,
         });
-        setAdminProfile(response.data.Results[0].data);
+        updateProfile(response.data.Results[0].data, (err, updatedUser) => {
+          setAdminProfile(updatedUser);
+        });
       } else {
         setToastDetails({
           show: true,

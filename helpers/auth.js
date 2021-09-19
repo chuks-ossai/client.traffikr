@@ -75,3 +75,12 @@ export const logout = (next) => {
   removeLocalStorage("user");
   next();
 };
+
+export const updateProfile = (updatedUser, next) => {
+  if (localStorage.getItem("user")) {
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    next(null, updatedUser);
+  } else {
+    next("Unable to update user in local storage", null);
+  }
+};

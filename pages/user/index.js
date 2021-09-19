@@ -10,6 +10,7 @@ import { baseURL } from "app-config";
 import Toastr from "@traffikr/components/Toastr";
 import ProfileForm from "@traffikr/components/ProfileForm";
 import Loader from "@traffikr/components/Loader";
+import { updateProfile } from "helpers/auth";
 
 const User = ({ user, links, token }) => {
   const [categories, setCategories] = useState([]);
@@ -81,7 +82,9 @@ const User = ({ user, links, token }) => {
           type: "success",
           message: response.data.Results[0].message,
         });
-        setUserProfile(response.data.Results[0].data);
+        updateProfile(response.data.Results[0].data, (err, updatedUser) => {
+          setUserProfile(updatedUser);
+        });
       } else {
         setToastDetails({
           show: true,
