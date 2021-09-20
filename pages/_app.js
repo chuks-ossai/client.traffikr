@@ -36,17 +36,7 @@ function MyApp({ Component, pageProps }) {
   }, []);
   return (
     <>
-      <Head>
-        <title>Traffikr | </title>
-      </Head>
-      {/* <SWRConfig
-        value={{
-          fetcher,
-          dedupingInterval: 10000,
-        }}
-      > */}
       <Component {...pageProps} />
-      {/* </SWRConfig> */}
     </>
   );
 }

@@ -131,6 +131,7 @@ export default function Home({ categories }) {
         mainContent={getMainContent(categories)}
         sideContentTitle="Trending Links"
         sideContent={getSideContent(popularLinks)}
+        pageDescription="Browse topics to view users' published links to Tutorials, Articles, News, Videos, Books, etc. See all top rated links and promote your link through this site"
       />
     </Layout>
   );

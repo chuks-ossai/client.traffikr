@@ -1,4 +1,9 @@
 import React from "react";
+import Head from "next/head";
+import renderHTML from "react-render-html";
+import { appDomain, appName } from "app-config";
+
+const stripHTML = (data) => data?.replace(/<\/?[^>]+(>|$)/g, "");
 
 const PublicLayout = ({
   pageTitle,
@@ -8,9 +13,36 @@ const PublicLayout = ({
   sideContentTitle,
   pageTitleContent,
   richText,
+  pageDescription,
+  pageImg,
 }) => {
   return (
     <>
+      <Head>
+        <title>
+          {pageTitle} | {appName}{" "}
+        </title>
+        <meta
+          name="description"
+          content={
+            stripHTML(richText?.substring(0, 160)) ||
+            pageDescription.substring(0, 160)
+          }
+        />
+        <meta property="og:title" content={pageTitle} />
+        <meta
+          property="og:description"
+          content={
+            stripHTML(richText?.substring(0, 160)) ||
+            pageDescription.substring(0, 160)
+          }
+        />
+        <meta property="og:url" content={appDomain} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={pageImg} />
+        <meta property="og:image:secure_url" content={pageImg} />
+      </Head>
+
       <div className="row my-5">
         <div className="col-12 col-md-9">
           <h1 className="h1 font-weight-bold">{pageTitle}</h1>
@@ -20,7 +52,11 @@ const PublicLayout = ({
       </div>
       {richText && (
         <div className="row my-5">
-          <div className="col-12 col-md-9">{richText}</div>
+          <div className="col-12 col-md-9">
+            <div className="lead alert alert-secondary p-4">
+              {renderHTML(richText)}
+            </div>
+          </div>
         </div>
       )}
 

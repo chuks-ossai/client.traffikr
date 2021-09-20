@@ -1,5 +1,3 @@
-import renderHTML from "react-render-html";
-
 import Layout from "@traffikr/components/Layout";
 import { baseURL } from "app-config";
 import axios from "axios";
@@ -74,12 +72,6 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
 
   const getImageContent = ({ img: { url }, slug }) => (
     <img src={url} alt={slug} style={{ width: "auto", maxHeight: 200 }} />
-  );
-
-  const getRichTextContent = ({ description }) => (
-    <div className="lead alert alert-secondary p-4">
-      {renderHTML(description || "")}
-    </div>
   );
 
   const getMainContent = ({ links, totalLinks, limit }) => (
@@ -206,10 +198,11 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
         subTitle={`${state.links.length} Link${
           state.links.length > 1 && "s"
         } Loaded`}
-        richText={getRichTextContent(state.category)}
+        richText={state.category?.description}
         mainContent={getMainContent(state)}
         sideContentTitle="Trending Links"
         sideContent={getSideContent(state)}
+        pageImg={state.category?.img?.url}
       />
     </Layout>
   );
