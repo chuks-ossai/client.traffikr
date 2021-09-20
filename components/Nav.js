@@ -4,8 +4,6 @@ import { useRouter } from "next/router";
 const Nav = () => {
   const router = useRouter();
 
-  console.log(isAuth());
-
   const handleLogout = () => {
     logout(() => {
       router.push("/login");

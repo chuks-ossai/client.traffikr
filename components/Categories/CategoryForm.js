@@ -55,7 +55,6 @@ const CategoryForm = ({
 
   useEffect(() => {
     if (category) {
-      console.log(category);
       const fields = ["name", "description"];
       fields.forEach((field) => setValue(field, category[field]));
     }

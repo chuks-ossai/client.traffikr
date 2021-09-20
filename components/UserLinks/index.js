@@ -63,7 +63,6 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
         });
       }
     } catch (err) {
-      console.log(err);
       setProcessing(false);
       setToastDetails({
         show: true,

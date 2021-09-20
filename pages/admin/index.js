@@ -103,7 +103,6 @@ const Admin = ({ user, token }) => {
         });
       }
     } catch (err) {
-      console.log(err);
       setUpdatingProfile(false);
       setToastDetails({
         show: true,

@@ -36,7 +36,6 @@ const ProfileForm = ({ onSubmit, processing, categories = [], data }) => {
       ];
       fields.forEach((field) => {
         if (field === "interestedTopics") {
-          console.log(data);
           const vals = categories.filter((v) => data[field]?.includes(v.value));
           setValue(field, vals);
         } else {

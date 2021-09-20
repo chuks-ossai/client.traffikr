@@ -73,7 +73,6 @@ const AdminLinks = ({
         });
       }
     } catch (err) {
-      console.log(err);
       setProcessing(false);
       setToastDetails({
         show: true,

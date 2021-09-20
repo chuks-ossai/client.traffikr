@@ -64,19 +64,15 @@ const UserLinkForm = ({
 
   useEffect(() => {
     if (link) {
-      // console.log(returnSelectValue(link.categories));
       const fields = ["title", "url", "type", "medium", "categories"];
       fields.forEach((field) => {
         if (field === "type") {
           const val = typeOptions.find((v) => v.value === link[field]);
-          console.log(field, val);
           setValue(field, val);
         } else if (field === "medium") {
           const val = mediumOptions.find((v) => v.value === link[field]);
-          console.log(field, val);
           setValue(field, val);
         } else if (field === "categories") {
-          console.log("fields", link[field]);
           const vals = link[field].map((l) => ({
             label: l.name,
             value: l._id,
@@ -141,9 +137,7 @@ const UserLinkForm = ({
             <Select
               {...register("type", { required: true })}
               value={value}
-              // onChange={onChange}
               onChange={(e) => {
-                console.log(e);
                 onChange({ target: { value: e } });
               }}
               onBlur={onBlur}

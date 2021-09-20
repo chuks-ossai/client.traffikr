@@ -71,7 +71,6 @@ const Categories = ({ token, data, reloadData, ReactQuill }) => {
         });
       }
     } catch (err) {
-      console.log(err);
       setProcessing(false);
       setToastDetails({
         show: true,

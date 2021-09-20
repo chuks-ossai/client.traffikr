@@ -26,7 +26,6 @@ const User = ({ user, links, token }) => {
   useEffect(() => {
     loadCategories();
     loadLinks();
-    console.log("load links");
   }, []);
 
   const reloadData = () => {
@@ -58,7 +57,6 @@ const User = ({ user, links, token }) => {
       },
     });
     if (res.data.Success && res.data.Results) {
-      console.log(res.data);
       setUserLinks(res.data.Results);
     } else {
       console.log(res.data);
@@ -93,7 +91,6 @@ const User = ({ user, links, token }) => {
         });
       }
     } catch (err) {
-      console.log(err);
       setUpdatingProfile(false);
       setToastDetails({
         show: true,
