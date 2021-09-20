@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Layout from "@traffikr/components/Layout";
 import { baseURL } from "app-config";
 import axios from "axios";
@@ -71,7 +72,7 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
   };
 
   const getImageContent = ({ img: { url }, slug }) => (
-    <img src={url} alt={slug} style={{ width: "auto", maxHeight: 200 }} />
+    <Image src={url} alt={slug} style={{ width: "auto", maxHeight: 200 }} />
   );
 
   const getMainContent = ({ links, totalLinks, limit }) => (
@@ -90,7 +91,7 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
                 className="col-md-8"
                 onClick={() => handleUpdateClickCount(link._id)}
               >
-                <a href={link.url} target="_blank">
+                <a href={link.url} target="_blank" rel="noopener noreferrer">
                   <h5 className="pt-2">{link.title}</h5>
                   <h6 className="pt-2 text-danger" style={{ fontSize: 12 }}>
                     {link.url}
@@ -146,6 +147,7 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
             <a
               href={link.url}
               target="_blank"
+              rel="noopener noreferrer"
               onClick={() => handleUpdateClickCount(link._id)}
             >
               <h5 className="pt-2">{link.title}</h5>

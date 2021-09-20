@@ -189,7 +189,7 @@ const Login = () => {
               <div className="d-grid gap-2 d-md-flex justify-content-md-center mt-5">
                 <p>
                   <span className="text-secondary">
-                    Don't have and account?
+                    {"Don't have and account?"}
                   </span>{" "}
                   <Link href="/register">
                     <a className="link-primary">Create</a>

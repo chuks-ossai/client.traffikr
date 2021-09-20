@@ -150,7 +150,11 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
               <div className="container">
                 <div className="row">
                   <div className="col-md-8">
-                    <a href={link.url} target="_blank">
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <h5 className="pt-2">{link.title}</h5>
                       <h6 className="pt-2 text-danger" style={{ fontSize: 12 }}>
                         {link.url}

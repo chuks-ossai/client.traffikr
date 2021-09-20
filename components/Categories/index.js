@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Loader from "@traffikr/components/Loader";
 import Toastr from "@traffikr/components/Toastr";
 import { baseURL } from "app-config";
@@ -167,7 +168,7 @@ const Categories = ({ token, data, reloadData, ReactQuill }) => {
                 <tr key={category._id}>
                   <td>
                     <span className="me-3">
-                      <img
+                      <Image
                         src={category.img.url}
                         alt={category.slug}
                         width="60"

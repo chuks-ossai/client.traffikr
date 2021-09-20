@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 import { Controller, useForm } from "react-hook-form";
 import * as Yup from "yup";
@@ -117,7 +118,7 @@ const CategoryForm = ({
             {showPreview && (
               <div className="prev-img">
                 <span>
-                  <img
+                  <Image
                     src={category.img.url}
                     alt={category.slug}
                     width="80"

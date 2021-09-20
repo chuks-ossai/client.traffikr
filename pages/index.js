@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Layout from "@traffikr/components/Layout";
 import { baseURL } from "app-config";
 import axios from "axios";
@@ -49,7 +50,7 @@ export default function Home({ categories }) {
       >
         <div className="shadow bg-white rounded d-flex align-items-center justify-content-start px-3 py-2 h-100">
           {category.img && category.img.url ? (
-            <img
+            <Image
               className="img-fluid me-3"
               width="50"
               height="50"
@@ -77,6 +78,7 @@ export default function Home({ categories }) {
             <a
               href={link.url}
               target="_blank"
+              rel="noopener noreferrer"
               onClick={() => handleClickCount(link._id)}
             >
               <h5 className="pt-2">{link.title}</h5>
