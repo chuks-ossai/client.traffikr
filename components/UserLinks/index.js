@@ -147,6 +147,7 @@ const UserLinks = ({ token, data, reloadData, categories }) => {
         <Col>
           {data.map((link) => (
             <LinkItem
+              key={link._id}
               link={link}
               onEditClick={onEditClick}
               onDeleteIconClick={onDeleteIconClick}

@@ -2,7 +2,7 @@ import { formatDistance } from "date-fns";
 
 const LinkItem = ({ link, onDeleteIconClick, onEditClick }) => {
   return (
-    <div className="alert alert-primary p-2" key={link._id}>
+    <div className="alert alert-primary p-2">
       <div className="container">
         <div className="row">
           <div className="col-md-7">
