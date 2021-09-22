@@ -72,7 +72,13 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
   };
 
   const getImageContent = ({ img: { url }, slug }) => (
-    <Image src={url} alt={slug} style={{ width: "auto", maxHeight: 200 }} />
+    <Image
+      src={url}
+      alt={slug}
+      layout="responsive"
+      width="100%"
+      height="100%"
+    />
   );
 
   const getMainContent = ({ links, totalLinks, limit }) => (
@@ -138,6 +144,12 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
       ))}
     </InfiniteScroll>
   );
+
+  // HH.Cr.n44SkdtE(
+  // PolygonEdge
+
+  // polyhqzf
+  // ovfUK4bCzJDT
 
   const getSideContent = ({ popularLinks }) =>
     popularLinks.map((link) => (

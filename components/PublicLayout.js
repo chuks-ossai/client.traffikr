@@ -44,7 +44,10 @@ const PublicLayout = ({
       </Head>
 
       <div className="row my-5">
-        <div className="col-12 col-md-9">
+        <div
+          className="col-12 col-md-9 d-flex align-items-end mb-3 mb-md-0 p-0"
+          style={{ borderBottom: "1px solid #e2e3e4" }}
+        >
           <h1 className="h1 font-weight-bold">{pageTitle}</h1>
         </div>
         <div className="col-12 col-md-3">{pageTitleContent}</div>
