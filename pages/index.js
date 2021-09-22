@@ -48,24 +48,28 @@ export default function Home({ categories }) {
         key={category._id}
         style={{ maxHeight: 80 }}
       >
-        <div className="shadow bg-white rounded d-flex align-items-center justify-content-start px-3 py-2 h-100">
-          {category.img && category.img.url ? (
-            <Image
-              className="img-fluid me-3"
-              width="50"
-              height="50"
-              src={category?.img?.url}
-              alt={category.slug}
-            />
-          ) : (
-            <Avatar name={category.name} className="cards__item__img" />
-          )}
-
-          <h5 className="text-break">
-            <Link href={`links/${category.slug}`}>
-              <a>{category.name}</a>
-            </Link>
-          </h5>
+        <div className="shadow bg-white rounded px-3 py-2 h-100">
+          <div className="row">
+            <div className="col-4">
+              {category.img && category.img.url ? (
+                <Image
+                  width="60"
+                  height="60"
+                  src={category?.img?.url}
+                  alt={category.slug}
+                />
+              ) : (
+                <Avatar name={category.name} className="cards__item__img" />
+              )}
+            </div>
+            <div className="col-8 d-flex align-items-center justify-content-start ">
+              <h6 className="text-break">
+                <Link href={`links/${category.slug}`}>
+                  <a>{category.name}</a>
+                </Link>
+              </h6>
+            </div>
+          </div>
         </div>
       </div>
     ));
@@ -73,7 +77,7 @@ export default function Home({ categories }) {
   const getSideContent = (lnks) =>
     lnks.map((link) => (
       <div className="alert alert-primary p-2" key={link._id}>
-        <div className="row">
+        <div className="row text-break">
           <div className="col-12">
             <a
               href={link.url}

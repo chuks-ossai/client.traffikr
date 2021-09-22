@@ -10,7 +10,10 @@ const Nav = () => {
     });
   };
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light position-sticky">
+    <nav
+      className="navbar navbar-expand-lg navbar-light bg-light position-sticky"
+      style={{ top: 0, zIndex: 1 }}
+    >
       <div className="container-fluid">
         <Link href="/">
           <a className="navbar-brand">Traffikr.IO</a>

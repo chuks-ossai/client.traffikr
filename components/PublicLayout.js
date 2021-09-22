@@ -51,7 +51,6 @@ const PublicLayout = ({
           <h1 className="h1 font-weight-bold">{pageTitle}</h1>
         </div>
         <div className="col-12 col-md-3">{pageTitleContent}</div>
-        <hr />
       </div>
       {richText && (
         <div className="row my-5">

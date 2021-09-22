@@ -92,7 +92,7 @@ const Links = ({ query, links, totalLinks, limit, skip, category }) => {
       {links.map((link) => (
         <div className="alert alert-primary p-2" key={link._id}>
           <div className="container">
-            <div className="row">
+            <div className="row text-break">
               <div
                 className="col-md-8"
                 onClick={() => handleUpdateClickCount(link._id)}
